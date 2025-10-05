@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd ./src && nodemon index.js"
+    "test": "jest --detectOpenHandles --forceExit",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:connection": "node test-connection.js",
+    "test:connection-only": "jest connection.test.js",
+    "dev": "cd ./src && nodemon index.js",
+    "start": "cd ./src && node index.js"
   },
   "keywords": [],
   "author": "",
@@ -50,6 +55,27 @@
     "swagger-ui-express": "^5.0.1",
     "unique-string-generator": "^1.1.1",
     "validator": "^13.12.0",
+    "winston": "^3.11.0",
     "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "@types/jest": "^29.5.8"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/src/tests/setup.js"],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/config/**",
+      "!src/logs/**",
+      "!src/tests/**"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "testTimeout": 30000,
+    "verbose": true
   }
 }

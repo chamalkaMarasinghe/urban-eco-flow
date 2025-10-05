@@ -22,6 +22,9 @@ const { authenticateSocket } = require("./middlewares/authenticateSocket.js");
 
 // NOTE: importing routes
 const AuthRoutes = require("./routes/auth.js");
+const SensorRoutes = require("./routes/sensor.js");
+const CollectionRequestRoutes = require("./routes/collectionRequest.js");
+const BinRoutes = require("./routes/bin.js");
 
 // NOTE: building the current environment according to env variables
 const currentEnvironment = require("./config/environmentConfig");
@@ -41,17 +44,17 @@ const SERVICE_PROVIDER = currentEnvironment.SERVICE_PROVIDER;
 const ENVIRONMENT = currentEnvironment.ENVIRONMENT;
 
 // NOTE: connecting the redis server
-const redisClient = redis.createClient({
-  url: `redis://${currentEnvironment.REDIS_HOST}:${currentEnvironment.REDIS_PORT}`,
-});
+// const redisClient = redis.createClient({
+//   url: `redis://${currentEnvironment.REDIS_HOST}:${currentEnvironment.REDIS_PORT}`,
+// });
 
-const connectRedis = async () => {
-  try {
-    await redisClient.connect();
-  } catch (error) {
-    console.error("Redis connection failed", err);
-  }
-}
+// const connectRedis = async () => {
+//   try {
+//     await redisClient.connect();
+//   } catch (error) {
+//     console.error("Redis connection failed", err);
+//   }
+// }
 // NOTE: connect redis instance
 // connectRedis();
 
@@ -141,7 +144,7 @@ app.use(
 // NOTE: testing route: verifing the api running or not
 app.get("/", async (req, res, next) => {
   try {
-    return handleResponse(res, 200, "Welcome to KidsPlan API !");
+    return handleResponse(res, 200, "Welcome to UrbanEcoFlow API !");
   } catch (error) {
     return next(error);
   }
@@ -165,6 +168,9 @@ app.get(
 
 // NOTE: configuring routes
 app.use(`/api/v${currentEnvironment.API_VERSION}/auth`, AuthRoutes);
+app.use(`/api/v${currentEnvironment.API_VERSION}/sensors`, SensorRoutes);
+app.use(`/api/v${currentEnvironment.API_VERSION}/collection-requests`, CollectionRequestRoutes);
+app.use(`/api/v${currentEnvironment.API_VERSION}/bins`, BinRoutes);
 
 // NOTE: Add catch all route - for handling the unmatched routes
 app.use(
@@ -207,16 +213,16 @@ const socketIO = require("socket.io")(http, {
 socketIO.use(authenticateSocket);
 
 // NOTE: initializing socket communicating modules
-initSocket(socketIO, redisClient);
+// initSocket(socketIO, redisClient);
 
 // NOTE: connecting redis
-redisClient.on("error", (err) => {
-  console.log("Redis Client Error", err);
-});
+// redisClient.on("error", (err) => {
+//   console.log("Redis Client Error", err);
+// });
 
-redisClient.on("connect", () => {
-  console.log("Connection to Redis successfully!");
-});
+// redisClient.on("connect", () => {
+//   console.log("Connection to Redis successfully!");
+// });
 
 // NOTE : Re sceduling the planned scheduled jobs after on a server re-startup
 // reschedulePendingJobs();
@@ -241,3 +247,5 @@ http.listen(PORT, async function () {
     console.log(err);
   }
 });
+
+module.exports = app;

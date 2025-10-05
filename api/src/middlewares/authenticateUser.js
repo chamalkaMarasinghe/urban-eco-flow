@@ -43,7 +43,14 @@ exports.authenticateUser = (options = {}) => catchAsync(async (req, res, next) =
     }
 
     if (user._id && user.roles) {
-        req.user = { _id: user?._id, roles: user?.roles, email: user?.email, isSuspended: user?.isSuspended, isDeleted: user?.isDeleted};
+        req.user = { 
+            id: user?._id, 
+            _id: user?._id, 
+            roles: user?.roles, 
+            email: user?.email, 
+            isSuspended: user?.isSuspended, 
+            isDeleted: user?.isDeleted
+        };
     } else {
         return next(new UnauthorizedError());
     }

@@ -39,7 +39,7 @@ exports.startupMethod = async () => {
                 }
 
                 if (!isExists) {
-                    const doc = new DocumentCounter({collection: document, count: documentCountersMountingCount});
+                    const doc = new DocumentCounter({collection_name: document, count: documentCountersMountingCount});
                     await doc.save();
                 }
             }

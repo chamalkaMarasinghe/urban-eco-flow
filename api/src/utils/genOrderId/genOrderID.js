@@ -2,7 +2,7 @@ const DocumentCounter = require("../../models/documentCounter");
 
 exports.getNewID = async (schema) => {
   const documentCount = await DocumentCounter.findOneAndUpdate(
-    { collection: schema },
+    { collection_name: schema },
     { $inc: { count: 1 } },
     { new: true, returnNewDocument: true }
   );

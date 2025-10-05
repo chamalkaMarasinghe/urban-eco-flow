@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { roles, minutesTakenToExpireTheSigninOTP, minutesTakenToExpireTheForgotPasswordToken, mobileMoneyProviders, banks, categories, cities, paymentTypes } = require("../constants/commonConstants");
+const { roles, minutesTakenToExpireTheSigninOTP, minutesTakenToExpireTheForgotPasswordToken, mobileMoneyProviders, banks, categories, cities, paymentTypes, billingModels } = require("../constants/commonConstants");
 
 const { DateTime } = require("luxon");
 const crypto = require("node:crypto");
@@ -177,8 +177,8 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
-            minlength: 8,
+            // required: true,
+            // minlength: 8,
         },
         profilePicture: {
             type: String,
@@ -188,8 +188,8 @@ const userSchema = new mongoose.Schema(
         roles: {
             type: [String],
             required: true,
-            default: [roles.USER],
-            enum: [roles.USER],
+            default: [roles.RESIDENT],
+            enum: Object.values(roles),
         },
         verifyToken: {
             type: String,
@@ -232,6 +232,150 @@ const userSchema = new mongoose.Schema(
         pushTokenUpdatedAt: {
             type: Date,
             required: false,
+        },
+        // UrbanEcoFlow specific fields
+        userType: {
+            type: String,
+            required: false,
+            enum: ["individual", "business"],
+            default: "individual",
+        },
+        businessDetails: {
+            businessName: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            businessType: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            businessRegistrationNumber: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+        },
+        address: {
+            street: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            city: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            state: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            postalCode: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            country: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+            coordinates: {
+                type: [Number], // [longitude, latitude]
+                required: false,
+            },
+        },
+        billingPreferences: {
+            model: {
+                type: String,
+                required: false,
+                enum: Object.values(billingModels),
+                default: billingModels.FLAT_RATE,
+            },
+            paymentMethod: {
+                type: String,
+                required: false,
+                enum: ["credit_card", "debit_card", "mobile_money", "bank_transfer"],
+            },
+            autoPay: {
+                type: Boolean,
+                default: false,
+            },
+        },
+        subscriptionDetails: {
+            plan: {
+                type: String,
+                required: false,
+                enum: ["basic", "premium", "enterprise"],
+                default: "basic",
+            },
+            startDate: {
+                type: Date,
+                required: false,
+            },
+            endDate: {
+                type: Date,
+                required: false,
+            },
+            isActive: {
+                type: Boolean,
+                default: true,
+            },
+        },
+        wasteManagement: {
+            preferredCollectionDay: {
+                type: String,
+                required: false,
+                enum: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            },
+            preferredTimeSlot: {
+                start: {
+                    type: String,
+                    required: false,
+                },
+                end: {
+                    type: String,
+                    required: false,
+                },
+            },
+            recyclingParticipation: {
+                type: Boolean,
+                default: false,
+            },
+            specialInstructions: {
+                type: String,
+                required: false,
+                trim: true,
+            },
+        },
+        notificationPreferences: {
+            email: {
+                type: Boolean,
+                default: true,
+            },
+            sms: {
+                type: Boolean,
+                default: true,
+            },
+            push: {
+                type: Boolean,
+                default: true,
+            },
+            collectionReminders: {
+                type: Boolean,
+                default: true,
+            },
+            maintenanceAlerts: {
+                type: Boolean,
+                default: true,
+            },
+            billingNotifications: {
+                type: Boolean,
+                default: true,
+            },
         },
     },
     { timestamps: true }
@@ -398,6 +542,13 @@ userSchema.methods.clearOTP = async function (session = null) {
 
 // userSchema.index({ "idNumber.primary": 1 }, { unique: true, sparse: true });
 // userSchema.index({ "idNumber.secondary": 1 }, { unique: true, sparse: true });
+
+// UrbanEcoFlow specific indexes
+// userSchema.index({ "address.coordinates": "2dsphere" });
+// userSchema.index({ userType: 1 });
+// userSchema.index({ roles: 1 });
+// userSchema.index({ "subscriptionDetails.plan": 1 });
+// userSchema.index({ "subscriptionDetails.isActive": 1 });
 
 const User = new mongoose.model("User", userSchema);
 module.exports = User;

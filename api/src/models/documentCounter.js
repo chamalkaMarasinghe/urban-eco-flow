@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const documentCounterSchema = new mongoose.Schema(
     {
-        collection:{
+        collection_name:{
             type: String,
             required:true,
             unique : true,

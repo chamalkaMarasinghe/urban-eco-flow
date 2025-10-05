@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const env_configs = {
     ENVIRONMENT: process.env.ENVIRONMENT,
     API_VERSION: process.env.API_VERSION,
