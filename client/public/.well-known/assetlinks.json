@@ -1,0 +1,12 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.ordermanagement.mobileapp",
+            "sha256_cert_fingerprints": [
+                "50:71:6F:E5:3B:67:04:69:CA:C0:27:41:2C:CD:7E:BF:2E:80:E9:0D:37:14:13:1C:EE:C9:D0:E0:DC:B6:9B:5B"
+            ]
+        }
+    }
+]

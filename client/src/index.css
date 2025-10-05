@@ -1,0 +1,222 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #FAFAFA;
+}
+
+/* client and tasker theme .*/
+
+:root {/* Default (Client) */
+  --primary-color: #F65F18;
+  --secondary-color: #E31919;
+  --primary-text-color: #000000;
+  --secondary-text-color: #333333;
+  --primary-bg-color: #FFF7ED;
+  /* --primary-text-color: #00796B;
+  --secondary-color: #C3E0DD;
+  --tertiary-color: #FFFFFF;
+  --primary-light: #E0F2F1;
+  --avatar-bg: #00796B;
+  --avatar-text: #FFFFFF; */
+  --footer-theme: #0F161E;
+}
+
+/* Change the color of the active pagination dot */
+.swiper-pagination-bullet-active {
+  background-color: var(--primary-color);
+}
+
+/* Custom Pagination Dots */
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.custom-pagination .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background-color: #ccc;
+  margin: 0 4px;
+  border-radius: 50%;
+  opacity: 1;
+  transition: background-color 0.3s ease;
+}
+
+.custom-pagination .swiper-pagination-bullet-active {
+  background-color: var(--primary-color);
+}
+
+/* First dot as a line */
+.custom-pagination .swiper-pagination-bullet:first-child {
+  width: 60px;
+  height: 8px;
+  border-radius: 4px;
+  background-color: #ccc;
+  margin: 0 4px;
+}
+
+.custom-pagination
+.swiper-pagination-bullet:first-child.swiper-pagination-bullet-active {
+  background-color: var(--primary-color);
+}
+
+/* remove password reveal button */
+input[type='password']::-ms-reveal {
+  display: none;
+}
+
+
+/* Custom pagination styles */
+.ant-pagination-item {
+  background-color: var(--primary-bg-color) !important;
+  border: 1px solid var(--primary-color) !important;
+  /* border: transparent !important; */
+  color: #4A4A4A !important;
+  border-radius: 2px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  font-family: 'Poppins', sans-serif !important;
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.ant-pagination-prev .anticon,
+.ant-pagination-next .anticon {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 2px !important;
+  color: #4A4A4A !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  font-family: 'Poppins', sans-serif !important;
+  background-color: #DDE1E6 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.ant-pagination-item-active {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.ant-pagination-item:hover {
+  background-color: var(--primary-light) !important;
+  color: var(--primary-color) !important;
+}
+
+.ant-pagination-item a {
+  color: inherit !important; /* Inherit color from the parent */
+}
+
+.ant-pagination-item a:hover {
+  color: inherit !important;
+}
+
+.ant-pagination-item {
+  margin-right: 10px !important;
+}
+
+.ant-pagination-item:last-child {
+  margin-right: 0 !important;
+}
+
+/* Style for table of contents links */
+/* Selected (clicked) TOC item */
+.toc-selected {
+  color: #00796B !important;
+}
+
+.toc-link {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0.5%;
+  color: black; /* Default color for the links */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition for color */
+}
+
+/* Hover state */
+.toc-link:hover, .toc-link:focus {
+  color: #00796B !important; /* Dark green color on hover/focus */
+  outline: none; /* Remove outline when focused */
+}
+
+/* Active state (when clicked) */
+.toc-link:active {
+  color: #00796B !important; /* Dark green color when clicked */
+}
+
+/* Optional: Adjust the focus outline if you want */
+.toc-link:focus {
+  outline: 2px solid #00796B;
+  outline-offset: 2px;
+}
+
+.lazy-load-image-background{
+  width: 100%;
+  height: 100%;
+}
+
+.lazyload-wrapper{
+  width: 100%;
+  height: 100%;
+}
+
+.blur-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Adjust as needed */
+  pointer-events: none; /* Allow clicking through */
+  z-index: -1;
+
+  /* Create the blur gradient effect */
+  background: linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.3) 0%,
+          rgba(255, 255, 255, 0) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* For browsers that don't support backdrop-filter, we use a mask */
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.responsive-tooltip .ant-tooltip-inner {
+  max-width: 400px !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+}
+
+/* Mobile screens */
+@media (max-width: 767px) {
+  .responsive-tooltip .ant-tooltip-inner {
+    max-width: 360px !important;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .responsive-tooltip .ant-tooltip-inner {
+    max-width: 250px !important;
+  }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+      (function () {
+        const authData = localStorage.getItem("auth");
+        let role = "USER"; // Default role
+
+        if (authData) {
+          try {
+            const parsedData = JSON.parse(authData);
+            role = parsedData.role || role; // Fallback to "user" if role is missing
+          } catch (error) {
+            console.error("Error parsing auth data:", error);
+          }
+        }
+
+        document.documentElement.classList.add(role);
+      })();
+    </script>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Get started with Icieos to run your business , better. Booking, Marketing, and Payment all in one."
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Icieos Order Managemnt</title>
+    <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/logo192.png">
+  
+    <!-- Open Graph (OG) meta tags for link previews -->
+    <meta property="og:title" content="Icieos Order Management" />
+    <meta property="og:description" content="Get started with Icieos to run your business , better. Booking, Marketing, and Payment all in one." />
+    <meta property="og:image" content="%PUBLIC_URL%/logo192.png"/>
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

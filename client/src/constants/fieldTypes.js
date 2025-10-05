@@ -1,0 +1,17 @@
+export const COMMON_FIELD_TYPES = {
+    TEXT_FIELD: "text",
+    EMAIL_FIELD: "email",
+    PASSWORD_FIELD: "password",
+    CONFIRM_PASSWORD: 'confirmPassword',
+    PHONE: "phone",
+    REQUIRED_FIELD: "requiredField",
+    BOOLEAN_FIELD: 'booleanField',
+    NUMBER_FIELD: "number",
+    URL: "url",
+    DROPDOWN: "dropdown",
+    DATE_PICKER: "datePicker",
+    TIME_PICKER: "timePicker",
+    ID_NUMBER: 'idNumber',
+    EMAIL_OR_PHONE: 'emailOrPhone',
+    CHECKBOX: 'checkbox',
+};
