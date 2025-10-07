@@ -12,6 +12,7 @@ const {
   BadRequestError,
 } = require("../utils/errors/CustomErrors");
 const { wasteCategories } = require("../constants/commonConstants");
+const AppError = require("../utils/errors/AppError");
 
 /**
  * @desc    Get all bins with pagination and filtering
@@ -85,7 +86,7 @@ exports.getAllBins = catchAsync(async (req, res, next) => {
 exports.getBinById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const bin = await Bin.findOne({ id, isDeleted: { $ne: true } })
+  const bin = await Bin.findOne({ _id: id, isDeleted: { $ne: true } })
     .populate("owner", "firstName lastName email phoneNumber address")
     .populate("sensor", "serialNumber type status batteryLevel installationDate");
 
@@ -126,15 +127,15 @@ exports.createBin = catchAsync(async (req, res, next) => {
 
   // Validate sensor ownership if sensorId provided
   if (sensorId) {
-    const sensor = await Sensor.findOne({ id: sensorId, owner: req.user.id });
+    const sensor = await Sensor.findOne({ _id: sensorId, owner: req.user.id });
     if (!sensor) {
       throw new RecordNotFoundError("Sensor");
     }
   }
 
   // Validate location
-  if (!location || !location.coordinates) {
-    throw new ValidationError("Location with coordinates is required");
+  if (!location?.location || !location?.location?.coordinates) {
+    throw new AppError("Location with coordinates is required", 400, 400);
   }
 
   const binData = {
@@ -146,9 +147,9 @@ exports.createBin = catchAsync(async (req, res, next) => {
     owner: req.user.id,
     location: {
       type: "Point",
-      coordinates: [location.longitude, location.latitude],
-      address: location.address,
-      landmark: location.landmark,
+      coordinates: [location?.location?.longitude || 0, location?.location.latitude || 0],
+      address: location?.location?.address,
+      landmark: location?.location?.landmark,
     },
   };
 
@@ -185,13 +186,13 @@ exports.updateBin = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const updateData = req.body;
 
-  const bin = await Bin.findOne({ id, isDeleted: { $ne: true } });
+  const bin = await Bin.findOne({ _id: id, isDeleted: { $ne: true } });
   if (!bin) {
     throw new RecordNotFoundError("Bin");
   }
 
   // Check ownership or admin role
-  if (bin.owner.toString() !== req.user.id && !req.user.roles.includes("ADMIN")) {
+  if (bin.owner.toString() !== req.user.id?.toString()) {
     throw new PermissionDeniedError();
   }
 
@@ -201,7 +202,7 @@ exports.updateBin = catchAsync(async (req, res, next) => {
   delete updateData.owner;
 
   const updatedBin = await Bin.findOneAndUpdate(
-    { id },
+    { _id: id },
     updateData,
     { new: true, runValidators: true }
   ).populate("owner", "firstName lastName email phoneNumber")
@@ -219,18 +220,18 @@ exports.attachSensor = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const { sensorId } = req.body;
 
-  const bin = await Bin.findOne({ id, isDeleted: { $ne: true } });
+  const bin = await Bin.findOne({ _id: id, isDeleted: { $ne: true } });
   if (!bin) {
     throw new RecordNotFoundError("Bin");
   }
 
-  const sensor = await Sensor.findOne({ id: sensorId, isDeleted: { $ne: true } });
+  const sensor = await Sensor.findOne({ _id: sensorId, isDeleted: { $ne: true } });
   if (!sensor) {
     throw new RecordNotFoundError("Sensor");
   }
 
   // Check permissions
-  const canAttach = bin.owner.toString() === req.user.id ||
+  const canAttach = bin.owner.toString() === req.user.id?.toString() ||
     req.user.roles.includes("ADMIN") ||
     req.user.roles.includes("COLLECTION_TEAM");
 
@@ -268,13 +269,13 @@ exports.attachSensor = catchAsync(async (req, res, next) => {
 exports.detachSensor = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const bin = await Bin.findOne({ id, isDeleted: { $ne: true } });
+  const bin = await Bin.findOne({ _id: id, isDeleted: { $ne: true } });
   if (!bin) {
     throw new RecordNotFoundError("Bin");
   }
 
   // Check permissions
-  const canDetach = bin.owner.toString() === req.user.id ||
+  const canDetach = bin.owner.toString() === req.user.id?.toString() ||
     req.user.roles.includes("ADMIN") ||
     req.user.roles.includes("COLLECTION_TEAM");
 
@@ -304,38 +305,38 @@ exports.detachSensor = catchAsync(async (req, res, next) => {
   return handleResponse(res, 200, "Sensor detached successfully", populatedBin);
 });
 
-/**
- * @desc    Update bin fill level
- * @route   PUT /api/v1/bins/:id/fill-level
- * @access  Private (Collection Team, Admin)
- */
-exports.updateFillLevel = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const { fillLevel, weight } = req.body;
+// /**
+//  * @desc    Update bin fill level
+//  * @route   PUT /api/v1/bins/:id/fill-level
+//  * @access  Private (Collection Team, Admin)
+//  */
+// exports.updateFillLevel = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { fillLevel, weight } = req.body;
 
-  const bin = await Bin.findOne({ id, isDeleted: { $ne: true } });
-  if (!bin) {
-    throw new RecordNotFoundError("Bin");
-  }
+//   const bin = await Bin.findOne({ id, isDeleted: { $ne: true } });
+//   if (!bin) {
+//     throw new RecordNotFoundError("Bin");
+//   }
 
-  if (fillLevel !== undefined) {
-    if (fillLevel < 0 || fillLevel > 100) {
-      throw new ValidationError("Fill level must be between 0 and 100");
-    }
-    bin.currentFillLevel = fillLevel;
-  }
+//   if (fillLevel !== undefined) {
+//     if (fillLevel < 0 || fillLevel > 100) {
+//       throw new ValidationError("Fill level must be between 0 and 100");
+//     }
+//     bin.currentFillLevel = fillLevel;
+//   }
 
-  if (weight !== undefined) {
-    if (weight < 0) {
-      throw new ValidationError("Weight must be a positive number");
-    }
-    bin.currentWeight = weight;
-  }
+//   if (weight !== undefined) {
+//     if (weight < 0) {
+//       throw new ValidationError("Weight must be a positive number");
+//     }
+//     bin.currentWeight = weight;
+//   }
 
-  await bin.save();
+//   await bin.save();
 
-  return handleResponse(res, 200, "Bin fill level updated successfully", bin);
-});
+//   return handleResponse(res, 200, "Bin fill level updated successfully", bin);
+// });
 
 /**
  * @desc    Add collection record to bin
@@ -388,109 +389,109 @@ exports.getMyBins = catchAsync(async (req, res, next) => {
   return handleResponse(res, 200, "Your bins retrieved successfully", bins);
 });
 
-/**
- * @desc    Get full bins (above threshold)
- * @route   GET /api/v1/bins/full
- * @access  Private (Collection Team, Operations Planner, Admin)
- */
-exports.getFullBins = catchAsync(async (req, res, next) => {
-  const { page = 1, limit = 10, threshold = 80 } = req.query;
+// /**
+//  * @desc    Get full bins (above threshold)
+//  * @route   GET /api/v1/bins/full
+//  * @access  Private (Collection Team, Operations Planner, Admin)
+//  */
+// exports.getFullBins = catchAsync(async (req, res, next) => {
+//   const { page = 1, limit = 10, threshold = 80 } = req.query;
 
-  const query = {
-    currentFillLevel: { $gte: parseInt(threshold) },
-    isActive: true,
-    isDeleted: { $ne: true },
-  };
+//   const query = {
+//     currentFillLevel: { $gte: parseInt(threshold) },
+//     isActive: true,
+//     isDeleted: { $ne: true },
+//   };
 
-  const options = {
-    page: parseInt(page),
-    limit: parseInt(limit),
-    sort: { currentFillLevel: -1 },
-    populate: [
-      { path: "owner", select: "firstName lastName email phoneNumber" },
-      { path: "sensor", select: "serialNumber type status batteryLevel" },
-    ],
-  };
+//   const options = {
+//     page: parseInt(page),
+//     limit: parseInt(limit),
+//     sort: { currentFillLevel: -1 },
+//     populate: [
+//       { path: "owner", select: "firstName lastName email phoneNumber" },
+//       { path: "sensor", select: "serialNumber type status batteryLevel" },
+//     ],
+//   };
 
-  const bins = await Bin.paginate(query, options);
+//   const bins = await Bin.paginate(query, options);
 
-  return handleResponse(res, 200, "Full bins retrieved successfully", bins);
-});
+//   return handleResponse(res, 200, "Full bins retrieved successfully", bins);
+// });
 
-/**
- * @desc    Get bins by category
- * @route   GET /api/v1/bins/category/:category
- * @access  Private (Collection Team, Operations Planner, Admin)
- */
-exports.getBinsByCategory = catchAsync(async (req, res, next) => {
-  const { category } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+// /**
+//  * @desc    Get bins by category
+//  * @route   GET /api/v1/bins/category/:category
+//  * @access  Private (Collection Team, Operations Planner, Admin)
+//  */
+// exports.getBinsByCategory = catchAsync(async (req, res, next) => {
+//   const { category } = req.params;
+//   const { page = 1, limit = 10 } = req.query;
 
-  if (!Object.values(wasteCategories).includes(category)) {
-    throw new ValidationError("Invalid waste category");
-  }
+//   if (!Object.values(wasteCategories).includes(category)) {
+//     throw new ValidationError("Invalid waste category");
+//   }
 
-  const query = {
-    category,
-    isActive: true,
-    isDeleted: { $ne: true },
-  };
+//   const query = {
+//     category,
+//     isActive: true,
+//     isDeleted: { $ne: true },
+//   };
 
-  const options = {
-    page: parseInt(page),
-    limit: parseInt(limit),
-    sort: { createdAt: -1 },
-    populate: [
-      { path: "owner", select: "firstName lastName email phoneNumber" },
-      { path: "sensor", select: "serialNumber type status batteryLevel" },
-    ],
-  };
+//   const options = {
+//     page: parseInt(page),
+//     limit: parseInt(limit),
+//     sort: { createdAt: -1 },
+//     populate: [
+//       { path: "owner", select: "firstName lastName email phoneNumber" },
+//       { path: "sensor", select: "serialNumber type status batteryLevel" },
+//     ],
+//   };
 
-  const bins = await Bin.paginate(query, options);
+//   const bins = await Bin.paginate(query, options);
 
-  return handleResponse(res, 200, `Bins in ${category} category retrieved successfully`, bins);
-});
+//   return handleResponse(res, 200, `Bins in ${category} category retrieved successfully`, bins);
+// });
 
-/**
- * @desc    Get bins near location
- * @route   GET /api/v1/bins/near
- * @access  Private (Collection Team, Operations Planner, Admin)
- */
-exports.getBinsNearLocation = catchAsync(async (req, res, next) => {
-  const { longitude, latitude, radius = 1000, page = 1, limit = 10 } = req.query;
+// /**
+//  * @desc    Get bins near location
+//  * @route   GET /api/v1/bins/near
+//  * @access  Private (Collection Team, Operations Planner, Admin)
+//  */
+// exports.getBinsNearLocation = catchAsync(async (req, res, next) => {
+//   const { longitude, latitude, radius = 1000, page = 1, limit = 10 } = req.query;
 
-  if (!longitude || !latitude) {
-    throw new ValidationError("Longitude and latitude are required");
-  }
+//   if (!longitude || !latitude) {
+//     throw new ValidationError("Longitude and latitude are required");
+//   }
 
-  const query = {
-    "location.coordinates": {
-      $near: {
-        $geometry: {
-          type: "Point",
-          coordinates: [parseFloat(longitude), parseFloat(latitude)],
-        },
-        $maxDistance: parseInt(radius),
-      },
-    },
-    isActive: true,
-    isDeleted: { $ne: true },
-  };
+//   const query = {
+//     "location.coordinates": {
+//       $near: {
+//         $geometry: {
+//           type: "Point",
+//           coordinates: [parseFloat(longitude), parseFloat(latitude)],
+//         },
+//         $maxDistance: parseInt(radius),
+//       },
+//     },
+//     isActive: true,
+//     isDeleted: { $ne: true },
+//   };
 
-  const options = {
-    page: parseInt(page),
-    limit: parseInt(limit),
-    sort: { currentFillLevel: -1 },
-    populate: [
-      { path: "owner", select: "firstName lastName email phoneNumber" },
-      { path: "sensor", select: "serialNumber type status batteryLevel" },
-    ],
-  };
+//   const options = {
+//     page: parseInt(page),
+//     limit: parseInt(limit),
+//     sort: { currentFillLevel: -1 },
+//     populate: [
+//       { path: "owner", select: "firstName lastName email phoneNumber" },
+//       { path: "sensor", select: "serialNumber type status batteryLevel" },
+//     ],
+//   };
 
-  const bins = await Bin.paginate(query, options);
+//   const bins = await Bin.paginate(query, options);
 
-  return handleResponse(res, 200, "Nearby bins retrieved successfully", bins);
-});
+//   return handleResponse(res, 200, "Nearby bins retrieved successfully", bins);
+// });
 
 /**
  * @desc    Delete bin (soft delete)

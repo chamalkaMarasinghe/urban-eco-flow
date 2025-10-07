@@ -10,7 +10,7 @@ const binSchema = new mongoose.Schema(
   {
     id: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     binNumber: {
@@ -41,27 +41,27 @@ const binSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: true,
-      },
-      address: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      landmark: {
-        type: String,
-        required: false,
-        trim: true,
-      },
-    },
+    // location: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //     default: "Point",
+    //   },
+    //   coordinates: {
+    //     type: [Number], // [longitude, latitude]
+    //     required: true,
+    //   },
+    //   address: {
+    //     type: String,
+    //     required: true,
+    //     trim: true,
+    //   },
+    //   landmark: {
+    //     type: String,
+    //     required: false,
+    //     trim: true,
+    //   },
+    // },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

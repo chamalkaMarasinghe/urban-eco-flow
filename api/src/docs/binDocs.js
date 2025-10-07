@@ -109,16 +109,16 @@ module.exports = {
     }
   },
 
-  "/bins/{id}/fill-level": {
-    put: {
-      summary: "Update bin fill level",
-      tags: ["Bins"],
-      security: [{ bearerAuth: [] }],
-      parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
-      requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { fillLevel: { type: "number" }, weight: { type: "number" } } } } } },
-      responses: { "200": { description: "Fill level updated" }, "400": { description: "Validation error" }, "404": { description: "Bin not found" } }
-    }
-  },
+//   "/bins/{id}/fill-level": {
+//     put: {
+//       summary: "Update bin fill level",
+//       tags: ["Bins"],
+//       security: [{ bearerAuth: [] }],
+//       parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+//       requestBody: { required: true, content: { "application/json": { schema: { type: "object", properties: { fillLevel: { type: "number" }, weight: { type: "number" } } } } } },
+//       responses: { "200": { description: "Fill level updated" }, "400": { description: "Validation error" }, "404": { description: "Bin not found" } }
+//     }
+//   },
 
   "/bins/{id}/collection-record": {
     post: {
@@ -131,33 +131,33 @@ module.exports = {
     }
   },
 
-  "/bins/full": {
-    get: {
-      summary: "Get full bins",
-      tags: ["Bins"],
-      security: [{ bearerAuth: [] }],
-      parameters: [ { name: "page", in: "query", schema: { type: "integer", default: 1 } }, { name: "limit", in: "query", schema: { type: "integer", default: 10 } }, { name: "threshold", in: "query", schema: { type: "integer", default: 80 } } ],
-      responses: { "200": { description: "Full bins retrieved" } }
-    }
-  },
+//   "/bins/full": {
+//     get: {
+//       summary: "Get full bins",
+//       tags: ["Bins"],
+//       security: [{ bearerAuth: [] }],
+//       parameters: [ { name: "page", in: "query", schema: { type: "integer", default: 1 } }, { name: "limit", in: "query", schema: { type: "integer", default: 10 } }, { name: "threshold", in: "query", schema: { type: "integer", default: 80 } } ],
+//       responses: { "200": { description: "Full bins retrieved" } }
+//     }
+//   },
 
-  "/bins/category/{category}": {
-    get: {
-      summary: "Get bins by category",
-      tags: ["Bins"],
-      security: [{ bearerAuth: [] }],
-      parameters: [ { name: "category", in: "path", required: true, schema: { type: "string" } }, { name: "page", in: "query", schema: { type: "integer", default: 1 } }, { name: "limit", in: "query", schema: { type: "integer", default: 10 } } ],
-      responses: { "200": { description: "Bins in category retrieved" } }
-    }
-  },
+//   "/bins/category/{category}": {
+//     get: {
+//       summary: "Get bins by category",
+//       tags: ["Bins"],
+//       security: [{ bearerAuth: [] }],
+//       parameters: [ { name: "category", in: "path", required: true, schema: { type: "string" } }, { name: "page", in: "query", schema: { type: "integer", default: 1 } }, { name: "limit", in: "query", schema: { type: "integer", default: 10 } } ],
+//       responses: { "200": { description: "Bins in category retrieved" } }
+//     }
+//   },
 
-  "/bins/near": {
-    get: {
-      summary: "Get bins near location",
-      tags: ["Bins"],
-      security: [{ bearerAuth: [] }],
-      parameters: [ { name: "longitude", in: "query", required: true, schema: { type: "number" } }, { name: "latitude", in: "query", required: true, schema: { type: "number" } }, { name: "radius", in: "query", schema: { type: "integer", default: 1000 } } ],
-      responses: { "200": { description: "Nearby bins retrieved" } }
-    }
-  }
+//   "/bins/near": {
+//     get: {
+//       summary: "Get bins near location",
+//       tags: ["Bins"],
+//       security: [{ bearerAuth: [] }],
+//       parameters: [ { name: "longitude", in: "query", required: true, schema: { type: "number" } }, { name: "latitude", in: "query", required: true, schema: { type: "number" } }, { name: "radius", in: "query", schema: { type: "integer", default: 1000 } } ],
+//       responses: { "200": { description: "Nearby bins retrieved" } }
+//     }
+//   }
 };

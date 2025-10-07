@@ -33,7 +33,7 @@ class BinService {
 
       // Validate sensor ownership if sensorId provided
       if (binData.sensorId) {
-        const sensor = await Sensor.findOne({ id: binData.sensorId, owner: userId });
+        const sensor = await Sensor.findOne({ _id: binData.sensorId, owner: userId });
         if (!sensor) {
           throw new RecordNotFoundError('Sensor');
         }
@@ -187,7 +187,7 @@ class BinService {
 
       // Check ownership or admin role
       const user = await User.findById(userId);
-      if (bin.owner.toString() !== userId && !user.roles.includes('ADMIN')) {
+      if (bin.owner.toString() !== userId?.toString()) {
         throw new PermissionDeniedError();
       }
 

@@ -222,19 +222,19 @@ class SensorService {
    */
   async installSensor(sensorId, installData, userId) {
     try {
-      const sensor = await Sensor.findOne({ id: sensorId, isDeleted: { $ne: true } });
+      const sensor = await Sensor.findOne({ _id: sensorId, isDeleted: { $ne: true } });
       if (!sensor) {
         throw new RecordNotFoundError('Sensor');
       }
 
-      const bin = await Bin.findOne({ id: installData.binId, isDeleted: { $ne: true } });
+      const bin = await Bin.findOne({ _id: installData.binId, isDeleted: { $ne: true } });
       if (!bin) {
         throw new RecordNotFoundError('Bin');
       }
 
       // Check permissions
       const user = await User.findById(userId);
-      const canInstall = sensor.owner.toString() === userId ||
+      const canInstall = sensor.owner.toString() === userId?.toString() ||
         user.roles.includes('ADMIN') ||
         user.roles.includes('COLLECTION_TEAM');
 
@@ -265,47 +265,6 @@ class SensorService {
     }
   }
 
-  // /**
-  //  * Report sensor as faulty
-  //  * @param {string} sensorId - Sensor ID
-  //  * @param {Object} reportData - Report data
-  //  * @param {string} userId - User ID making report
-  //  * @returns {Promise<Object>} Updated sensor
-  //  */
-  // async reportSensorFaulty(sensorId, reportData, userId) {
-  //   try {
-  //     const sensor = await Sensor.findOne({ id: sensorId, isDeleted: { $ne: true } });
-  //     if (!sensor) {
-  //       throw new RecordNotFoundError('Sensor');
-  //     }
-
-  //     // Check permissions
-  //     const user = await User.findById(userId);
-  //     const canReport = sensor.owner.toString() === userId ||
-  //       user.roles.includes('ADMIN') ||
-  //       user.roles.includes('COLLECTION_TEAM');
-
-  //     if (!canReport) {
-  //       throw new PermissionDeniedError();
-  //     }
-
-  //     sensor.status = 'FAULTY';
-  //     await sensor.save();
-
-  //     logBusinessEvent('sensor_reported_faulty', {
-  //       sensorId,
-  //       userId,
-  //       reason: reportData.reason,
-  //     });
-
-  //     // TODO: Create maintenance request automatically
-  //     return sensor;
-  //   } catch (error) {
-  //     logError(error, { operation: 'reportSensorFaulty', sensorId, userId, reportData });
-  //     throw error;
-  //   }
-  // }
-
   /**
    * Get user's sensors
    * @param {string} userId - User ID
@@ -335,100 +294,6 @@ class SensorService {
       throw error;
     }
   }
-
-  // /**
-  //  * Get faulty sensors
-  //  * @param {Object} pagination - Pagination options
-  //  * @returns {Promise<Object>} Paginated faulty sensor results
-  //  */
-  // async getFaultySensors(pagination = {}) {
-  //   try {
-  //     const { page = 1, limit = 10 } = pagination;
-  //     const query = { 
-  //       status: 'FAULTY', 
-  //       isDeleted: { $ne: true } 
-  //     };
-
-  //     const options = {
-  //       page: parseInt(page),
-  //       limit: parseInt(limit),
-  //       sort: { createdAt: -1 },
-  //       populate: [
-  //         { path: 'owner', select: 'firstName lastName email phoneNumber' },
-  //         { path: 'bin', select: 'binNumber category location' },
-  //       ],
-  //     };
-
-  //     return await Sensor.paginate(query, options);
-  //   } catch (error) {
-  //     logError(error, { operation: 'getFaultySensors', pagination });
-  //     throw error;
-  //   }
-  // }
-
-  // /**
-  //  * Get sensors due for maintenance
-  //  * @param {Object} pagination - Pagination options
-  //  * @returns {Promise<Object>} Paginated sensor results
-  //  */
-  // async getSensorsDueForMaintenance(pagination = {}) {
-  //   try {
-  //     const { page = 1, limit = 10 } = pagination;
-  //     const today = new Date();
-  //     const query = {
-  //       nextMaintenanceDate: { $lte: today },
-  //       status: { $ne: 'MAINTENANCE' },
-  //       isDeleted: { $ne: true },
-  //     };
-
-  //     const options = {
-  //       page: parseInt(page),
-  //       limit: parseInt(limit),
-  //       sort: { nextMaintenanceDate: 1 },
-  //       populate: [
-  //         { path: 'owner', select: 'firstName lastName email phoneNumber' },
-  //         { path: 'bin', select: 'binNumber category location' },
-  //       ],
-  //     };
-
-  //     return await Sensor.paginate(query, options);
-  //   } catch (error) {
-  //     logError(error, { operation: 'getSensorsDueForMaintenance', pagination });
-  //     throw error;
-  //   }
-  // }
-
-  // /**
-  //  * Update sensor battery level
-  //  * @param {string} sensorId - Sensor ID
-  //  * @param {number} batteryLevel - Battery level percentage
-  //  * @returns {Promise<Object>} Updated sensor
-  //  */
-  // async updateBatteryLevel(sensorId, batteryLevel) {
-  //   try {
-  //     if (batteryLevel < 0 || batteryLevel > 100) {
-  //       throw new ValidationError('Battery level must be between 0 and 100');
-  //     }
-
-  //     const sensor = await Sensor.findOne({ id: sensorId, isDeleted: { $ne: true } });
-  //     if (!sensor) {
-  //       throw new RecordNotFoundError('Sensor');
-  //     }
-
-  //     sensor.batteryLevel = batteryLevel;
-  //     await sensor.save();
-
-  //     logBusinessEvent('sensor_battery_updated', {
-  //       sensorId,
-  //       batteryLevel,
-  //     });
-
-  //     return sensor;
-  //   } catch (error) {
-  //     logError(error, { operation: 'updateBatteryLevel', sensorId, batteryLevel });
-  //     throw error;
-  //   }
-  // }
 
   /**
    * Delete sensor (soft delete)
