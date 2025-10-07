@@ -16,10 +16,11 @@ const {
 
 exports.authenticateUser = (options = {}) => catchAsync(async (req, res, next) => {
     
-    if(req.headers?.clientroute?.toString()?.split("/")?.[1] === "events"){
-        return next()
-    }
-    
+    // if(req.headers?.clientroute?.toString()?.split("/")?.[1] === "events"){
+    //     return next()
+    // }
+    console.log("inside authenticate user ========>");
+
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {

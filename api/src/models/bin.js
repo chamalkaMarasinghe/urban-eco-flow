@@ -216,6 +216,47 @@ binSchema.statics.findByCategory = function (category) {
   return this.find({ category, isActive: true, isDeleted: { $ne: true } });
 };
 
+/**
+ * Lightweight paginate implementation compatible with common usage in services.
+ * Supports: page, limit, sort, populate (array or object)
+ * Returns an object similar to mongoose-paginate-v2: { docs, totalDocs, limit, page, totalPages, hasNextPage, hasPrevPage }
+ */
+binSchema.statics.paginate = async function (query = {}, options = {}) {
+  const page = Math.max(parseInt(options.page || 1, 10), 1);
+  const limit = Math.max(parseInt(options.limit || 10, 10), 1);
+  const sort = options.sort || { createdAt: -1 };
+
+  const skip = (page - 1) * limit;
+
+  let q = this.find(query).sort(sort).skip(skip).limit(limit);
+
+  if (options.populate) {
+    const pop = options.populate;
+    if (Array.isArray(pop)) {
+      pop.forEach((p) => q = q.populate(p));
+    } else if (typeof pop === 'object') {
+      q = q.populate(pop);
+    }
+  }
+
+  const [docs, totalDocs] = await Promise.all([
+    q.exec(),
+    this.countDocuments(query),
+  ]);
+
+  const totalPages = Math.ceil(totalDocs / limit) || 1;
+
+  return {
+    docs,
+    totalDocs,
+    limit,
+    page,
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  };
+};
+
 const Bin = mongoose.model("Bin", binSchema);
 
 module.exports = Bin;

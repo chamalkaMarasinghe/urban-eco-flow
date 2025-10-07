@@ -8,6 +8,8 @@ const {
 
 exports.authorizeRoles = (roles = []) => {
   return catchAsync(async (req, res, next) => {
+    console.log("inside authorize roles ========>");
+    
 
     if(req.headers?.clientroute?.toString()?.split("/")?.[1] === "events"){      
       return next()

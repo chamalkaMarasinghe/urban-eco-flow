@@ -35,25 +35,25 @@ exports.createSensorValidator = [
     .isFloat({ min: 0 })
     .withMessage("Purchase price must be a positive number"),
   
-  body("location")
-    .notEmpty()
-    .withMessage("Location is required")
-    .isObject()
-    .withMessage("Location must be an object"),
+  // body("location")
+  //   .notEmpty()
+  //   .withMessage("Location is required")
+  //   .isObject()
+  //   .withMessage("Location must be an object"),
   
-  body("location.longitude")
-    .isFloat({ min: -180, max: 180 })
-    .withMessage("Longitude must be between -180 and 180"),
+  // body("location.longitude")
+  //   .isFloat({ min: -180, max: 180 })
+  //   .withMessage("Longitude must be between -180 and 180"),
   
-  body("location.latitude")
-    .isFloat({ min: -90, max: 90 })
-    .withMessage("Latitude must be between -90 and 90"),
+  // body("location.latitude")
+  //   .isFloat({ min: -90, max: 90 })
+  //   .withMessage("Latitude must be between -90 and 90"),
   
-  body("location.address")
-    .notEmpty()
-    .withMessage("Address is required")
-    .isLength({ min: 5, max: 200 })
-    .withMessage("Address must be between 5 and 200 characters"),
+  // body("location.address")
+  //   .notEmpty()
+  //   .withMessage("Address is required")
+  //   .isLength({ min: 5, max: 200 })
+  //   .withMessage("Address must be between 5 and 200 characters"),
   
   body("binId")
     .optional()

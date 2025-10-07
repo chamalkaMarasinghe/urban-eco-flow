@@ -10,7 +10,7 @@ const sensorSchema = new mongoose.Schema(
   {
     id: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     serialNumber: {
@@ -64,22 +64,22 @@ const sensorSchema = new mongoose.Schema(
       max: 100,
       default: 100,
     },
-    location: {
-      type: {
-        type: String,
-        enum: ["Point"],
-        default: "Point",
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: false,
-      },
-      address: {
-        type: String,
-        required: false,
-        trim: true,
-      },
-    },
+    // location: {
+    //   type: {
+    //     type: String,
+    //     enum: ["Point"],
+    //     default: "Point",
+    //   },
+    //   coordinates: {
+    //     type: [Number], // [longitude, latitude]
+    //     required: false,
+    //   },
+    //   address: {
+    //     type: String,
+    //     required: false,
+    //     trim: true,
+    //   },
+    // },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -178,6 +178,50 @@ sensorSchema.statics.findSensorsDueForMaintenance = function () {
     status: { $ne: sensorStatus.MAINTENANCE },
     isDeleted: { $ne: true },
   });
+};
+
+/**
+ * Lightweight paginate implementation compatible with common usage in services.
+ * Supports: page, limit, sort, populate (array or object)
+ * Returns an object similar to mongoose-paginate-v2: { docs, totalDocs, limit, page, totalPages, hasNextPage, hasPrevPage }
+ */
+sensorSchema.statics.paginate = async function (query = {}, options = {}) {
+  const page = Math.max(parseInt(options.page || 1, 10), 1);
+  const limit = Math.max(parseInt(options.limit || 10, 10), 1);
+  const sort = options.sort || { createdAt: -1 };
+
+  const skip = (page - 1) * limit;
+
+  // Build the mongoose query
+  let q = this.find(query).sort(sort).skip(skip).limit(limit);
+
+  // Apply population if provided
+  if (options.populate) {
+    const pop = options.populate;
+    if (Array.isArray(pop)) {
+      pop.forEach((p) => q = q.populate(p));
+    } else if (typeof pop === 'object') {
+      q = q.populate(pop);
+    }
+  }
+
+  // Execute both count and find in parallel
+  const [docs, totalDocs] = await Promise.all([
+    q.exec(),
+    this.countDocuments(query),
+  ]);
+
+  const totalPages = Math.ceil(totalDocs / limit) || 1;
+
+  return {
+    docs,
+    totalDocs,
+    limit,
+    page,
+    totalPages,
+    hasNextPage: page < totalPages,
+    hasPrevPage: page > 1,
+  };
 };
 
 const Sensor = mongoose.model("Sensor", sensorSchema);

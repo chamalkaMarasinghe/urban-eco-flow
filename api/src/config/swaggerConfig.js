@@ -1,5 +1,8 @@
 const swaggerJSDoc = require("swagger-jsdoc");
 const authDocs = require("../docs/authDocs");
+const binDocs = require("../docs/binDocs");
+const sensorDocs = require("../docs/sensorDocs");
+const collectionRequestDocs = require("../docs/collectionRequestDocs");
 // const threadDocs = require("../docs/threadDocs");
 const currentEnvironment = require('./environmentConfig');
 const BASE_URL = currentEnvironment.BASE_URL;
@@ -15,6 +18,9 @@ const options = {
         },
         paths: {
             ...authDocs,
+            ...binDocs,
+            ...sensorDocs,
+            ...collectionRequestDocs,
             // ...threadDocs,
         },
         servers: [{ url: `${BASE_URL}/api/v${API_VERSION}` }],

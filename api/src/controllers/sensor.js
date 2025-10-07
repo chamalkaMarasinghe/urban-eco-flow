@@ -57,7 +57,7 @@ exports.createSensor = catchAsync(async (req, res, next) => {
  * @route   PUT /api/v1/sensors/:id
  * @access  Private (Owner, Admin)
  */
-exports.updateSensor = catchAsync(async (req, res, next) => {
+exports.updateSensor = catchAsync(async (req, res, next) => {  
   const { id } = req.params;
   const updateData = req.body;
 
@@ -84,21 +84,21 @@ exports.installSensor = catchAsync(async (req, res, next) => {
   return handleResponse(res, 200, "Sensor installed successfully", sensor);
 });
 
-/**
- * @desc    Report sensor as faulty
- * @route   POST /api/v1/sensors/:id/report-faulty
- * @access  Private (Owner, Admin, Collection Team)
- */
-exports.reportSensorFaulty = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const reportData = req.body;
+// /**
+//  * @desc    Report sensor as faulty
+//  * @route   POST /api/v1/sensors/:id/report-faulty
+//  * @access  Private (Owner, Admin, Collection Team)
+//  */
+// exports.reportSensorFaulty = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const reportData = req.body;
 
-  const sensor = await sensorService.reportSensorFaulty(id, reportData, req.user.id);
+//   const sensor = await sensorService.reportSensorFaulty(id, reportData, req.user.id);
   
-  logUserAction(req.user.id, 'report_sensor_faulty', { sensorId: id, reason: reportData.reason });
+//   logUserAction(req.user.id, 'report_sensor_faulty', { sensorId: id, reason: reportData.reason });
 
-  return handleResponse(res, 200, "Sensor reported as faulty", sensor);
-});
+//   return handleResponse(res, 200, "Sensor reported as faulty", sensor);
+// });
 
 /**
  * @desc    Get sensors by owner
@@ -119,57 +119,57 @@ exports.getMySensors = catchAsync(async (req, res, next) => {
   return handleResponse(res, 200, "Your sensors retrieved successfully", sensors);
 });
 
-/**
- * @desc    Get faulty sensors
- * @route   GET /api/v1/sensors/faulty
- * @access  Private (Admin, Maintenance Crew)
- */
-exports.getFaultySensors = catchAsync(async (req, res, next) => {
-  const pagination = {
-    page: req.query.page || 1,
-    limit: req.query.limit || 10,
-  };
+// /**
+//  * @desc    Get faulty sensors
+//  * @route   GET /api/v1/sensors/faulty
+//  * @access  Private (Admin, Maintenance Crew)
+//  */
+// exports.getFaultySensors = catchAsync(async (req, res, next) => {
+//   const pagination = {
+//     page: req.query.page || 1,
+//     limit: req.query.limit || 10,
+//   };
 
-  const sensors = await sensorService.getFaultySensors(pagination);
+//   const sensors = await sensorService.getFaultySensors(pagination);
   
-  logUserAction(req.user.id, 'get_faulty_sensors', { pagination });
+//   logUserAction(req.user.id, 'get_faulty_sensors', { pagination });
 
-  return handleResponse(res, 200, "Faulty sensors retrieved successfully", sensors);
-});
+//   return handleResponse(res, 200, "Faulty sensors retrieved successfully", sensors);
+// });
 
-/**
- * @desc    Get sensors due for maintenance
- * @route   GET /api/v1/sensors/maintenance-due
- * @access  Private (Admin, Maintenance Crew)
- */
-exports.getSensorsDueForMaintenance = catchAsync(async (req, res, next) => {
-  const pagination = {
-    page: req.query.page || 1,
-    limit: req.query.limit || 10,
-  };
+// /**
+//  * @desc    Get sensors due for maintenance
+//  * @route   GET /api/v1/sensors/maintenance-due
+//  * @access  Private (Admin, Maintenance Crew)
+//  */
+// exports.getSensorsDueForMaintenance = catchAsync(async (req, res, next) => {
+//   const pagination = {
+//     page: req.query.page || 1,
+//     limit: req.query.limit || 10,
+//   };
 
-  const sensors = await sensorService.getSensorsDueForMaintenance(pagination);
+//   const sensors = await sensorService.getSensorsDueForMaintenance(pagination);
   
-  logUserAction(req.user.id, 'get_sensors_due_for_maintenance', { pagination });
+//   logUserAction(req.user.id, 'get_sensors_due_for_maintenance', { pagination });
 
-  return handleResponse(res, 200, "Sensors due for maintenance retrieved successfully", sensors);
-});
+//   return handleResponse(res, 200, "Sensors due for maintenance retrieved successfully", sensors);
+// });
 
-/**
- * @desc    Update sensor battery level
- * @route   PUT /api/v1/sensors/:id/battery
- * @access  Private (Collection Team, Admin)
- */
-exports.updateBatteryLevel = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const { batteryLevel } = req.body;
+// /**
+//  * @desc    Update sensor battery level
+//  * @route   PUT /api/v1/sensors/:id/battery
+//  * @access  Private (Collection Team, Admin)
+//  */
+// exports.updateBatteryLevel = catchAsync(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { batteryLevel } = req.body;
 
-  const sensor = await sensorService.updateBatteryLevel(id, batteryLevel);
+//   const sensor = await sensorService.updateBatteryLevel(id, batteryLevel);
   
-  logUserAction(req.user.id, 'update_sensor_battery', { sensorId: id, batteryLevel });
+//   logUserAction(req.user.id, 'update_sensor_battery', { sensorId: id, batteryLevel });
 
-  return handleResponse(res, 200, "Battery level updated successfully", sensor);
-});
+//   return handleResponse(res, 200, "Battery level updated successfully", sensor);
+// });
 
 /**
  * @desc    Delete sensor (soft delete)
