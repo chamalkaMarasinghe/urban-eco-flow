@@ -57,23 +57,11 @@ router.put("/:id", updateSensorValidator, validate, updateSensor);
 // Install sensor to bin (docs: src/docs/sensorDocs.js)
 router.post("/:id/install", installSensorValidator, validate, installSensor);
 
-// Report sensor faulty (docs: src/docs/sensorDocs.js)
-// router.post("/:id/report-faulty", reportFaultyValidator, validate, reportSensorFaulty);
-
-// Update battery level (docs: src/docs/sensorDocs.js)
-// router.put("/:id/battery", updateBatteryValidator, validate, updateBatteryLevel);
-
 // Delete sensor (docs: src/docs/sensorDocs.js)
 router.delete("/:id", deleteSensor);
 
 // Admin and staff routes
 // Get all sensors (docs: src/docs/sensorDocs.js)
 router.get("/", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER, roles.USER]), getAllSensors);
-
-// Get faulty sensors (docs: src/docs/sensorDocs.js)
-// router.get("/faulty", authorizeRoles([roles.ADMIN, roles.MAINTENANCE_CREW]), getFaultySensors);
-
-// Get sensors due for maintenance (docs: src/docs/sensorDocs.js)
-// router.get("/maintenance-due", authorizeRoles([roles.ADMIN, roles.MAINTENANCE_CREW]), getSensorsDueForMaintenance);
 
 module.exports = router;

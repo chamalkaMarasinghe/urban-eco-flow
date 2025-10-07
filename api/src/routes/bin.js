@@ -69,18 +69,6 @@ router.delete("/:id", deleteBin);
 // Get all bins (admin/staff) (docs: src/docs/binDocs.js)
 router.get("/", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER, roles.USER]), getAllBins);
 
-// Get full bins (docs: src/docs/binDocs.js)
-// router.get("/full", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getFullBins);
-
-// Get bins by category (docs: src/docs/binDocs.js)
-// router.get("/category/:category", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getBinsByCategory);
-
-// Get bins near location (docs: src/docs/binDocs.js)
-// router.get("/near", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getBinsNearLocation);
-
-// Update fill level (docs: src/docs/binDocs.js)
-// router.put("/:id/fill-level", updateFillLevelValidator, validate, authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM]), updateFillLevel);
-
 // Add collection record (docs: src/docs/binDocs.js)
 router.post("/:id/collection-record", addCollectionRecordValidator, validate, authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM]), addCollectionRecord);
 
