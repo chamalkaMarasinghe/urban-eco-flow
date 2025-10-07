@@ -67,21 +67,21 @@ router.post("/:id/attachments", addAttachmentValidator, validate, addAttachment)
 
 // Admin and staff routes
 // Get all collection requests (docs: src/docs/collectionRequestDocs.js)
-router.get("/", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getAllCollectionRequests);
+router.get("/", authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getAllCollectionRequests);
 
 // Get pending collection requests (docs: src/docs/collectionRequestDocs.js)
-router.get("/pending", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getPendingCollectionRequests);
+router.get("/pending", authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getPendingCollectionRequests);
 
 // Get scheduled collection requests for a date (docs: src/docs/collectionRequestDocs.js)
-router.get("/scheduled/:date", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getScheduledCollectionRequests);
+router.get("/scheduled/:date", authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getScheduledCollectionRequests);
 
 // Get urgent collection requests (docs: src/docs/collectionRequestDocs.js)
-router.get("/urgent", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getUrgentCollectionRequests);
+router.get("/urgent", authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), getUrgentCollectionRequests);
 
 // Schedule collection request (docs: src/docs/collectionRequestDocs.js)
-router.post("/:id/schedule", scheduleCollectionRequestValidator, validate, authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), scheduleCollectionRequest);
+router.post("/:id/schedule", scheduleCollectionRequestValidator, validate, authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER]), scheduleCollectionRequest);
 
 // Complete collection request (docs: src/docs/collectionRequestDocs.js)
-router.post("/:id/complete", completeCollectionRequestValidator, validate, authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM]), completeCollectionRequest);
+router.post("/:id/complete", completeCollectionRequestValidator, validate, authorizeRoles([roles.USER, roles.ADMIN, roles.COLLECTION_TEAM]), completeCollectionRequest);
 
 module.exports = router;

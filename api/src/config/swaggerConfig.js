@@ -93,8 +93,10 @@ const options = {
                             type: 'object',
                             properties: {
                                 type: { type: 'string', enum: ['Point'] },
-                                coordinates: { type: 'array', items: { type: 'number' } },
-                                address: { type: 'string' }
+                                coordinates: { type: 'array', items: { type: 'number' }, example: ["5", "5"] },
+                                address: { type: 'string' },
+                                longitude: { type: 'string', example: "5" },
+                                latitude: { type: 'string', example: "5" }
                             }
                         },
                         wasteDetails: {

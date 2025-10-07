@@ -16,12 +16,12 @@ const collectionRequestSchema = new mongoose.Schema(
   {
     id: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     requestNumber: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     type: {

@@ -107,7 +107,7 @@ exports.getAllCollectionRequests = catchAsync(async (req, res, next) => {
 exports.getCollectionRequestById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const request = await CollectionRequest.findOne({ id, isDeleted: { $ne: true } })
+  const request = await CollectionRequest.findOne({ _id: id, isDeleted: { $ne: true } })
     .populate("requester", "firstName lastName email phoneNumber address")
     .populate("collectionTeam", "firstName lastName email phoneNumber")
     .populate("bin", "binNumber category location");
@@ -128,7 +128,7 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   const {
     type,
     priority,
-    binId,
+    bin,
     location,
     wasteDetails,
     scheduledDate,
@@ -137,6 +137,9 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
     attachments,
   } = req.body;
 
+  console.log('location =========================');
+  console.log(location);
+  
   // Validate user
   const user = await User.findById(req.user.id);
   if (!user) {
@@ -144,9 +147,9 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   }
 
   // Validate bin ownership if binId provided
-  if (binId) {
-    const bin = await Bin.findOne({ id: binId, owner: req.user.id });
-    if (!bin) {
+  if (bin) {
+    const binDB = await Bin.findOne({ _id: bin, owner: req.user.id });
+    if (!binDB) {
       throw new RecordNotFoundError("Bin");
     }
   }
@@ -157,6 +160,7 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   }
 
   const requestData = {
+    requestNumber: "003",
     type: type || collectionRequestTypes.NORMAL,
     priority: priority || priorityLevels.MEDIUM,
     requester: req.user.id,
@@ -175,8 +179,8 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
     },
   };
 
-  if (binId) {
-    requestData.bin = binId;
+  if (bin) {
+    requestData.bin = bin;
   }
 
   if (scheduledDate) {
@@ -220,13 +224,13 @@ exports.updateCollectionRequest = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const updateData = req.body;
 
-  const request = await CollectionRequest.findOne({ id, isDeleted: { $ne: true } });
+  const request = await CollectionRequest.findOne({_id: id, isDeleted: { $ne: true } });
   if (!request) {
     throw new RecordNotFoundError("Collection request");
   }
 
   // Check permissions
-  const canUpdate = request.requester.toString() === req.user.id ||
+  const canUpdate = request.requester.toString() === req.user.id?.toString() ||
     req.user.roles.includes("ADMIN") ||
     req.user.roles.includes("COLLECTION_TEAM") ||
     req.user.roles.includes("OPERATIONS_PLANNER");
@@ -237,7 +241,7 @@ exports.updateCollectionRequest = catchAsync(async (req, res, next) => {
 
   // Remove fields that shouldn't be updated directly
   delete updateData.id;
-  delete updateData.requestNumber;
+  // delete updateData.requestNumber;
   delete updateData.requester;
 
   // Only allow status updates for collection team and admin
@@ -246,7 +250,7 @@ exports.updateCollectionRequest = catchAsync(async (req, res, next) => {
   }
 
   const updatedRequest = await CollectionRequest.findOneAndUpdate(
-    { id },
+    { _id: id },
     updateData,
     { new: true, runValidators: true }
   ).populate("requester", "firstName lastName email phoneNumber")

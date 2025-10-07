@@ -21,7 +21,7 @@ exports.createCollectionRequestValidator = [
     .isIn(Object.values(priorityLevels))
     .withMessage("Invalid priority level"),
   
-  body("binId")
+  body("bin")
     .optional()
     .isMongoId()
     .withMessage("Invalid bin ID"),
