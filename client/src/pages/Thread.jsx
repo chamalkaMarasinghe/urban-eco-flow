@@ -55,7 +55,7 @@ const SIZE = 10000;
 const Thread = () => {
   // NOTE: client side socket initializing
   const socket = useSocket();
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
 
   // NOTE: signed in user state
   const userState = useSelector((state) => state?.auth?.user);

@@ -8,7 +8,7 @@ const HeroSearchBar = ({
   handleSearch = () => {},
 }) => {
 
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
 
   return (
     <div className="w-full max-w-4xl mx-auto border-[3px] rounded-[10px] border-[#FFFFFF]">

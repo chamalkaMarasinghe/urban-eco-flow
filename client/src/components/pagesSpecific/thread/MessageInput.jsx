@@ -17,7 +17,7 @@ const MessageInput = ({ onSendMessage, text, setText, loading = false, isHidden 
   );
 
   const [isCreatingOfferModel, setIsCreatingOfferModel] = useState(false);
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
 
   // const [message, setMessage] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);

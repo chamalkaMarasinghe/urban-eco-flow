@@ -24,7 +24,7 @@ const Footer = () => {
     const [logoLoaded, setLogoLoaded] = useState(false);
     const [socialIconsLoaded, setSocialIconsLoaded] = useState({});
     const [reachUsIconsLoaded, setReachUsIconsLoaded] = useState({});
-    const { language } = useLanguage();
+    // const { language } = useLanguage();
 
     const currentYear = new Date().getFullYear();
 
@@ -89,7 +89,7 @@ const Footer = () => {
             style={{ backgroundColor: "var(--footer-theme)", width: "100%" }}
             className="px-[10px] sm:px-[25px] md:px-[40px] lg:px-[60px] pt-3"
         >
-            <div className="flex flex-col pt-3 pb-1">
+            <div className="flex flex-col pt-3 pb-1 max-w-[1600px] mx-auto">
                 {/* Top Section */}
                 <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center">
                     {/* Navigation Menu */}

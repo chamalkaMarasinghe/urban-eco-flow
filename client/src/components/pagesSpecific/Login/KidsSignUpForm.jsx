@@ -25,7 +25,7 @@ import {validateField} from "../../../utils/validationUtils";
 import { useLanguage } from "../../../context/language/language";
 
 const KidsSignUpForm = ({ handlers, variant }) => {
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
   const authPopupContentMap = {
     [AUTH_POPUP_VARIANTS.REGISTER]: {
       title: "Register Account",

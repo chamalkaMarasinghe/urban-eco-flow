@@ -51,6 +51,7 @@ module.exports = {
         "custom-w-br-1400": "1400px",
         "custom-w-br-1440": "1440px",
         'custom-w-br-1450': '1450px',
+        'custom-w-br-1600': '1600px',
       },
       fontSize: {
         "level-1": "40px",

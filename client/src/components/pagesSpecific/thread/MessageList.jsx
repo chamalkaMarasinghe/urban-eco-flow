@@ -26,7 +26,7 @@ const MessageList = ({
   // Create refs for the chat container and messages end
   const chatContainerRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
 
   // Function to scroll to bottom of the chat container only
   const scrollToBottom = () => {

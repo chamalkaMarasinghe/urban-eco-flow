@@ -19,7 +19,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const {language} = useLanguage();
+  // const {language} = useLanguage();
 
   // State management
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -103,18 +103,18 @@ const Navbar = () => {
 
   // Style constants
   const STYLES = {
-    link: "font-roboto font-medium text-[16px] leading-[100%] tracking-[0%] text-[#022B3A] transition-colors duration-300 hover:text-user-orange",
+    link: "font-roboto font-medium text-[16px] leading-[100%] tracking-[0%] text-[#022B3A] transition-colors duration-300 hover:text-primary",
     activeLink:
-      "font-roboto font-medium text-[16px] leading-[100%] tracking-[0%] text-user-orange",
+      "font-roboto font-medium text-[16px] leading-[100%] tracking-[0%] text-primary",
     buttonBase:
       "rounded-[12px] font-roboto text-[16px] leading-[100%] transition-all duration-300 h-[43px]",
   };
 
   // Navigation links configuration
   const NAV_LINKS = [
-    { path: "/about-us", label: "About Us" },
-    { path: "/events", label: "Events" },
-    { path: "/contact-us", label: "Contact Us" },
+    { path: "/", label: "Home" },
+    { path: "/devices", label: "Devices" },
+    { path: "/py-production", label: "My Production" },
   ];
 
   // Profile dropdown links configuration
@@ -171,7 +171,7 @@ const Navbar = () => {
 
   return (
     <nav className="h-[67px] w-full inset-0 z-[99] fixed bg-[#FFFEFC] backdrop-blur-[64px] shadow-[0px_4px_64px_0px_rgba(0,0,0,0.08)]">
-      <div className="relative w-full h-full mx-auto px-[10px] sm:px-[25px] md:px-[40px] lg:px-[60px]">
+      <div className="relative w-full h-full mx-auto px-[10px] sm:px-[25px] md:px-[40px] lg:px-[60px] max-w-[1700px]">
         <div className="relative flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex-shrink-0">
