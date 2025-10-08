@@ -487,7 +487,7 @@ const KidsSignUpForm = ({ handlers, variant }) => {
                 label={
                   <span className="font-roboto text-[14px] font-normal">
                     <span className="text-[#334155]">I agree to the </span>
-                    <span className="text-[#F65F18]">Privacy Policy</span>
+                    <span className="text-primary">Privacy Policy</span>
                   </span>
                 }
                 labelStyle="font-roboto font-normal text-sm leading-[18px] tracking-normal text-[#334155]"

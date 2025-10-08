@@ -16,8 +16,8 @@ body {
 /* client and tasker theme .*/
 
 :root {/* Default (Client) */
-  --primary-color: #F65F18;
-  --secondary-color: #E31919;
+  --primary-color: #02a807;
+  --secondary-color: #02a807;
   --primary-text-color: #000000;
   --secondary-text-color: #333333;
   --primary-bg-color: #FFF7ED;

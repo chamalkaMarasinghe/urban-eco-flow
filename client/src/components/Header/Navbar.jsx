@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { CONFIGURATIONS } from "../../config/envConfig";
 import { LANGUAGE } from "../../constants/commonConstants";
+import Logo from "../../assets/icons/Logo3.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -147,10 +148,10 @@ const Navbar = () => {
     login: {
       //no direct language object
       buttonText: "Sign In/Sign Up",
-      bgColor: "bg-[#F3F4F5]",
-      textColor: "text-black",
+      bgColor: "bg-transparent",
+      textColor: "text-primary",
       textWeight: "font-medium",
-      className: `${STYLES.buttonBase} hover:bg-[#FFF7ED] hover:border hover:border-user-orange hover:text-user-orange pt-[12px] pb-[12px]`,
+      className: `${STYLES.buttonBase} border border-primary pt-[12px] pb-[12px]`,
     },
     addBusiness: {
       buttonText: "Add Your Business",
@@ -170,16 +171,16 @@ const Navbar = () => {
 
   return (
     <nav className="h-[67px] w-full inset-0 z-[99] fixed bg-[#FFFEFC] backdrop-blur-[64px] shadow-[0px_4px_64px_0px_rgba(0,0,0,0.08)]">
-      <div className="relative w-full h-full px-4 mx-auto sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24">
+      <div className="relative w-full h-full mx-auto px-[10px] sm:px-[25px] md:px-[40px] lg:px-[60px]">
         <div className="relative flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="relative z-50 flex items-center">
-              {/*<img*/}
-              {/*  src={Logo}*/}
-              {/*  alt="Kidsplan Logo"*/}
-              {/*  className="w-[100px] h-[54px] sm:w-[124px] sm:h-[67px]"*/}
-              {/*/>*/}
+              {/* <img
+                src={Logo}
+                alt="Kidsplan Logo"
+                className="w-[100px] h-[54px] sm:w-[124px] sm:h-[67px]"
+              /> */}
 
               <div
                 className={twMerge(
@@ -188,14 +189,14 @@ const Navbar = () => {
                 )}
               >
                 <img
-                  // src={Logo}
-                  // placeholderSrc={Logo}
-                  // alt="location pin"
-                  // className="absolute inset-0 object-cover w-full h-full rounded-[12px]"
-                  // effect="blur"
-                  // onLoad={() => {
-                    // setLoadedLogo(true);
-                  // }}
+                  src={Logo}
+                  placeholderSrc={Logo}
+                  alt="location pin"
+                  className="absolute inset-0 object-cover w-full h-full rounded-[12px]"
+                  effect="blur"
+                  onLoad={() => {
+                    setLoadedLogo(true);
+                  }}
                 />
               </div>
             </Link>
@@ -220,9 +221,8 @@ const Navbar = () => {
             {/* {isAuthenticated && ( */}
             {/* <div className="flex items-center gap-4 ml-auto mr-6 bg-red-600 xl:gap-6 custom-w-br-1180:flex-shrink-0 custom-w-br-1180:ml-0 custom-w-br-1180:mr-0"> */}
             <div className={
-              twMerge(isAuthenticated ? 
-                `flex items-center gap-4 xl:gap-6 custom-w-br-1180:absolute custom-w-br-1180:left-0 custom-w-br-1180:right-0 custom-w-br-320:justify-center custom-w-br-320:items-center ml-auto mr-6 custom-w-br-1180:ml-auto custom-w-br-1180:mr-auto custom-w-br-1180:w-[30%] ${language === LANGUAGE?.POLISH?.value ? '-translate-x-[30px]' : ''}` :
-                `flex items-center gap-4 xl:gap-6 custom-w-br-1366:absolute custom-w-br-1366:left-0 custom-w-br-1366:right-0 custom-w-br-320:justify-center custom-w-br-320:items-center ml-auto mr-6 custom-w-br-1366:ml-auto custom-w-br-1366:mr-auto custom-w-br-1366:w-[30%] ${language === LANGUAGE?.POLISH?.value ? 'custom-w-br-1366:-translate-x-[90px]' : ''}`
+              twMerge(
+                `flex items-center justify-end gap-4 xl:gap-6 w-full ml-auto mr-6`
               )}>
               {NAV_LINKS.map(({ path, label }) => (
                 <Link
@@ -236,7 +236,7 @@ const Navbar = () => {
             </div>
             {/* )} */}
 
-            <div className={twMerge(isAuthenticated ? "hidden custom-w-br-1180:block flex-1" : "hidden custom-w-br-1366:block flex-1")}></div>
+            {/* <div className={twMerge(isAuthenticated ? "hidden custom-w-br-1180:block flex-1" : "hidden custom-w-br-1366:block flex-1")}></div> */}
 
             {/* Desktop Right Buttons */}
             <div className={twMerge(isAuthenticated ? "flex items-center gap-1 flex-shrink-0 custom-w-br-1180:ml-6" : "flex items-center gap-1 flex-shrink-0 custom-w-br-1366:ml-6")}>
@@ -305,15 +305,15 @@ const Navbar = () => {
                 </div>
               ) : (
                 /* Guest User UI */
-                // <CustomButton
-                //   {...buttonProps.login}
-                //   width="w-auto"
-                //   className={`${buttonProps.login.className} px-4 xl:px-6`}
-                //   onClick={() => {
-                //     dispatch(openSignInModal());
-                //   }}
-                // />
-                <span></span>
+                <CustomButton
+                  {...buttonProps.login}
+                  width="w-auto"
+                  className={`${buttonProps.login.className} px-4 xl:px-6`}
+                  onClick={() => {
+                    dispatch(openSignInModal());
+                  }}
+                />
+                // <span></span>
               )}
       
             </div>
@@ -442,7 +442,7 @@ const Navbar = () => {
 
           {/* Mobile Buttons */}
           <div className="flex flex-col w-full max-w-xs gap-4 mt-auto sm:max-w-md">
-            {/* {!isAuthenticated && (
+            {!isAuthenticated && (
               <CustomButton
                 {...buttonProps.login}
                 width="w-auto"
@@ -451,7 +451,7 @@ const Navbar = () => {
                   dispatch(openSignInModal());
                 }}
               />
-            )} */}
+            )}
  
           </div>
         </div>
