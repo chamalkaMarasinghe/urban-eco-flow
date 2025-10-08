@@ -21,6 +21,7 @@ import {
 } from "../components/routing/protectedAndPublicRoute";
 import KidsplanClientHomePage from "../pages/ClientHome";
 import TestReusableComponents from "../pages/TestReusableComponents";
+import RequestCollection from "../pages/CollectionRequest";
 
 const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
                 path: "",
                 element: <PublicRoute/>,
                 children: [
+                    {
+                        path: "/collection-request",
+                        element: <RequestCollection/>,
+                    },
                 ],
             },
 
