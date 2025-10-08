@@ -22,6 +22,8 @@ import {
 import KidsplanClientHomePage from "../pages/ClientHome";
 import TestReusableComponents from "../pages/TestReusableComponents";
 import RequestCollection from "../pages/CollectionRequest";
+import Sensors from "../pages/Sensors";
+import MyProduction from "../pages/MyProduction";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +44,14 @@ const router = createBrowserRouter([
                     {
                         path: "/collection-request",
                         element: <RequestCollection/>,
+                    },
+                    {
+                        path: "/devices",
+                        element: <Sensors/>,
+                    },
+                    {
+                        path: "/my-production",
+                        element: <MyProduction/>,
                     },
                 ],
             },

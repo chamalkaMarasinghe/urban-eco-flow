@@ -88,7 +88,7 @@ const Footer = () => {
         <footer
             style={{ backgroundColor: "var(--footer-theme)", width: "100%" }}
             className="px-[10px] sm:px-[25px] md:px-[40px] lg:px-[60px] pt-3"
-        >
+        >                              
             <div className="flex flex-col pt-3 pb-1 max-w-[1600px] mx-auto">
                 {/* Top Section */}
                 <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center">
@@ -96,16 +96,16 @@ const Footer = () => {
                     <div className="flex flex-col xl:pl-0 w-full">
                         {/* Logo */}
                         <div
-                            className="flex flex-col sm:flex-row w-full items-center sm:justify-between h-[79.96px] cursor-pointer -translate-y-6"
-                            onClick={() => handleNavigation("/")}
-                        >
+                            className="flex flex-col sm:flex-row w-full items-center sm:justify-between h-[79.96px] -translate-y-6"
+                            >
                             <div
                                 className={twMerge(
-                                    "relative w-[148px] h-[79.96px]",
+                                    "relative w-[148px] h-[79.96px] cursor-pointer",
                                     logoLoaded
-                                        ? "bg-transparent"
-                                        : "bg-gray-300 animate-pulse"
+                                    ? "bg-transparent"
+                                    : "bg-gray-300 animate-pulse"
                                 )}
+                                onClick={() => handleNavigation("/")}
                             >
                                 <LazyLoadImage
                                     src={FooterLogo}
@@ -117,9 +117,9 @@ const Footer = () => {
                                 />
                             </div>
                             <div className="flex gap-7 max-sm:mt-2 text-white font-[600]">
-                              <div>Home</div>
-                              <div>Devices</div>
-                              <div>My Production</div>
+                              <div className="cursor-pointer" onClick={() => {navigate("/")}}>Home</div>
+                              <dev className="cursor-pointer" onClick={() => {navigate("/devices")}}>Devices</dev>
+                              <div className="cursor-pointer" onClick={() => {navigate("/my-production")}}>My Production</div>
                             </div>
                         </div>
                         <div className="flex max-sm:justify-center max-sm:mt-7 w-full">

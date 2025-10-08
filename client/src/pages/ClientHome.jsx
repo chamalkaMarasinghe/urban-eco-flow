@@ -57,7 +57,7 @@ const ImageGallery = () => {
   );
 };
 
-const KidsplanClientHome = () => {
+const ClientHome = () => {
   return (
       <>
         <title>Urban Eco Flow</title>
@@ -70,4 +70,4 @@ const KidsplanClientHome = () => {
   );
 };
 
-export default KidsplanClientHome;
+export default ClientHome;

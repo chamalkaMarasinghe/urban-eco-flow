@@ -114,7 +114,7 @@ const Navbar = () => {
   const NAV_LINKS = [
     { path: "/", label: "Home" },
     { path: "/devices", label: "Devices" },
-    { path: "/py-production", label: "My Production" },
+    { path: "/my-production", label: "My Production" },
   ];
 
   // Profile dropdown links configuration
