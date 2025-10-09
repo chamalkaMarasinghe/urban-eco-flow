@@ -121,6 +121,7 @@ const Navbar = () => {
   const getProfileLinks = (isMobile = false) => {
     let links = [
       { path: "/user-profile", label: "My Profile" },
+      { path: "/my-sensors", label: "My Sensors" },
       { path: "/", label: "Logout" },
     ];
 

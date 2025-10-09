@@ -28,7 +28,7 @@ exports.authenticateUser = (options = {}) => catchAsync(async (req, res, next) =
     }
 
     const decodedToken = jwt.verify(token, JWT_SECRET);
-
+    
     const user = await User.findById(decodedToken._id).select("-password");
 
     if (!user) {

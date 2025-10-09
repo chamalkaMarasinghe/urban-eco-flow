@@ -10,6 +10,7 @@ const useragent = require('express-useragent');
 // Import routes
 const AuthRoutes = require('../routes/auth');
 const SensorRoutes = require('../routes/sensor');
+const SensorPurchaseRoutes = require('../routes/sensorPurchase');
 const CollectionRequestRoutes = require('../routes/collectionRequest');
 const BinRoutes = require('../routes/bin');
 
@@ -43,6 +44,7 @@ app.get('/', (req, res) => {
 // API routes
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/sensors', SensorRoutes);
+app.use('/api/v1/sensors', SensorPurchaseRoutes);
 app.use('/api/v1/collection-requests', CollectionRequestRoutes);
 app.use('/api/v1/bins', BinRoutes);
 

@@ -49,6 +49,7 @@ class SensorService {
         purchasePrice: sensorData.purchasePrice,
         owner: userId,
         status: 'INACTIVE',
+        attachment: "https://firebasestorage.googleapis.com/v0/b/realstate-aa106.appspot.com/o/collection-requests%2F1760025951908volume-sensor.jpg?alt=media&token=0e631f4e-0555-4bba-90be-ff55d300dee1"
       };
 
       if (sensorData.location) {

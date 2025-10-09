@@ -13,37 +13,40 @@ const sensorSchema = new mongoose.Schema(
       // required: true,
       // unique: true,
     },
+    attachment: {
+      type: String,
+    },
     serialNumber: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
       trim: true,
     },
     type: {
       type: String,
-      required: true,
+      // required: true,
       enum: Object.values(sensorTypes),
       default: sensorTypes.FILL_LEVEL,
     },
     status: {
       type: String,
-      required: true,
+      // required: true,
       enum: Object.values(sensorStatus),
       default: sensorStatus.INACTIVE,
     },
     manufacturer: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     model: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     purchasePrice: {
       type: Number,
-      required: true,
+      // required: true,
       min: 0,
     },
     installationDate: {

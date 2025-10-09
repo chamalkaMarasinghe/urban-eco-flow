@@ -14,6 +14,7 @@ const {
   updateBatteryLevel,
   deleteSensor,
 } = require("../controllers/sensor");
+const {purchaseSensor, getPurchasedSensors} = require("../controllers/sensorPurchase");
 const { authenticateUser } = require("../middlewares/authenticateUser");
 const { authorizeRoles } = require("../middlewares/authorizeRoles");
 const { roles } = require("../constants/commonConstants");
@@ -45,6 +46,13 @@ router.use(authenticateUser());
 // Routes for all authenticated users (docs moved to src/docs/sensorDocs.js)
 router.get("/my-sensors", getMySensors);
 
+//user get my sensors
+router.get(
+  "/purchased",
+  authorizeRoles([roles.RESIDENT, roles.BUSINESS, roles.USER]),
+  getPurchasedSensors
+);
+
 // Get sensor by ID (docs: src/docs/sensorDocs.js)
 router.get("/:id", getSensorById);
 
@@ -63,5 +71,12 @@ router.delete("/:id", deleteSensor);
 // Admin and staff routes
 // Get all sensors (docs: src/docs/sensorDocs.js)
 router.get("/", authorizeRoles([roles.ADMIN, roles.COLLECTION_TEAM, roles.OPERATIONS_PLANNER, roles.USER]), getAllSensors);
+
+//user purchase sendsor
+router.post(
+  "/purchase",
+  authorizeRoles([roles.RESIDENT, roles.BUSINESS, roles.USER]),
+  purchaseSensor
+);
 
 module.exports = router;

@@ -46,7 +46,7 @@ const Root = () => {
       <div className="mt-6">
         <Navbar />
       </div>
-      <main className="flex flex-col flex-grow pt-[70px] w-full max-w-[1560px] px-[20px] sm:px-[35px] md:px-[50px] lg:px-[70px] custom-w-br-1600:px-[0px] mx-auto">
+      <main className="flex flex-col flex-grow  w-full max-w-[1560px] px-[20px] sm:px-[35px] md:px-[50px] lg:px-[70px] custom-w-br-1600:px-[0px] mx-auto">
         {/* Handle Sign In Modal */}
         <AuthPopUp isOpen={isSignInModalOpen} />
         <ScrollToTop />

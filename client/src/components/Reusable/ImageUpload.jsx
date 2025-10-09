@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge";
 import { ClipLoader } from "react-spinners";
 import DraggableFileItem from "./ImageUploader/DraggableFileItem";
 import FileItem from "./ImageUploader/FileItem";
-
+import UploadImg from "../../assets/svgs/Upload icon.svg"
 
 const ImageUpload = ({
   label = "Upload Files",
@@ -187,7 +187,7 @@ const ImageUpload = ({
             ) : (
               <div className="relative ">
                 <img
-                //   src={UploadImg}
+                  src={UploadImg}
                   alt="Upload"
                   className="w-[68px] h-[64px]"
                 />

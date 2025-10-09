@@ -377,6 +377,14 @@ const userSchema = new mongoose.Schema(
                 default: true,
             },
         },
+        // Array to store purchased sensor IDs
+        purchasedSensors: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Sensor",
+                required: false,
+            }
+        ],
     },
     { timestamps: true }
 );

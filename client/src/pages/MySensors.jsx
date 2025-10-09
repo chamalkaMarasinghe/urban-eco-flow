@@ -2,7 +2,7 @@ import heroImage from "../assets/images/smart-city-hero.jpg";
 import weightedSensor from "../assets/images/weighted-sensor.jpg";
 import volumeSensor from "../assets/images/volume-sensor.jpg";
 import fillSensor from "../assets/images/fill-sensor.jpg";
-import { getAllSensors, purchaseSensor } from "../store/thunks/sensor";
+import { getAllPurchasedSensors, getAllSensors } from "../store/thunks/sensor";
 import { useThunk } from "../hooks/useThunk";
 import showToast from "../utils/toastNotifications";
 import { useEffect, useState } from "react";
@@ -16,10 +16,10 @@ const Sensors = () => {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-8">
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-                            Smart Sensors
+                            My Sensors
                         </h1>
                         <p className="text-lg sm:text-xl text-muted-foreground">
-                            We provide three types of dustbin sensors
+                            The list of purchased sensors
                         </p>
                     </div>
                     <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden">
@@ -65,27 +65,6 @@ const Sensors = () => {
 
     // Products Section Component
     const ProductsSection = ({sensors, purchseSensor}) => {
-        const products = [
-            {
-                title: "Weighted Sensors",
-                price: 10.0,
-                image: weightedSensor,
-                imageAlt: "Weighted sensor device",
-            },
-            {
-                title: "Volumed Sensors",
-                price: 20.0,
-                image: volumeSensor,
-                imageAlt: "Volume sensor circuit board",
-            },
-            {
-                title: "Fill Detecting Sensors",
-                price: 50.0,
-                image: fillSensor,
-                imageAlt: "Fill detection sensor with circuit board",
-            },
-        ];
-
         return (
             <section className="bg-background py-12 sm:py-16 lg:py-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -109,8 +88,7 @@ const Sensors = () => {
 
     const [sensors, setSensors] = useState([]);
 
-    const [doPurchaseSensor, isPurchaseSensor, errorPurchaseSensor] = useThunk(purchaseSensor);
-    const [doGetAllSensors, isGetAllSensors, errorGetAllSensors] = useThunk(getAllSensors);
+    const [doGetAllSensors, isGetAllSensors, errorGetAllSensors] = useThunk(getAllPurchasedSensors);
 
     useEffect(() => {
         getAllSensorsMethod();
@@ -118,20 +96,14 @@ const Sensors = () => {
 
     const getAllSensorsMethod = async() => {
         const res = await doGetAllSensors();
-        if(res?.success){
-            setSensors(res?.response?.data?.docs);
+        if(res?.success){            
+            setSensors(res?.response?.data);
         }else{
             showToast("error", res?.error?.message || "Error Occurred");
         }
     }
 
     const purchseSensor = async(id) => {
-        const res = await doPurchaseSensor({id});
-        if(res?.success){
-            showToast("success", "Sensor Purchased Successfully");
-        }else{
-            showToast("error", res?.error?.message || "Error occurred during purchasing a sensor");
-        }
     }    
 
     // Main Page Layout

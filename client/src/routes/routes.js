@@ -15,6 +15,7 @@ import {
 import ClientHomePage from "../pages/ClientHome";
 import RequestCollection from "../pages/CollectionRequest";
 import Sensors from "../pages/Sensors";
+import MySensors from "../pages/MySensors";
 import MyProduction from "../pages/MyProduction";
 
 const router = createBrowserRouter([
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
                     {
                         path: "/devices",
                         element: <Sensors/>,
+                    },
+                    {
+                        path: "/my-sensors",
+                        element: <MySensors/>,
                     },
                     {
                         path: "/my-production",

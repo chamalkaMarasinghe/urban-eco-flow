@@ -25,6 +25,7 @@ const AuthRoutes = require("./routes/auth.js");
 const SensorRoutes = require("./routes/sensor.js");
 const CollectionRequestRoutes = require("./routes/collectionRequest.js");
 const BinRoutes = require("./routes/bin.js");
+// const SensorPurchaseRoutes = require("./routes/sensorPurchase.js");
 
 // NOTE: building the current environment according to env variables
 const currentEnvironment = require("./config/environmentConfig");
@@ -169,6 +170,7 @@ app.get(
 // NOTE: configuring routes
 app.use(`/api/v${currentEnvironment.API_VERSION}/auth`, AuthRoutes);
 app.use(`/api/v${currentEnvironment.API_VERSION}/sensors`, SensorRoutes);
+// app.use(`/api/v${currentEnvironment.API_VERSION}/sensors`, SensorPurchaseRoutes);
 app.use(`/api/v${currentEnvironment.API_VERSION}/collection-requests`, CollectionRequestRoutes);
 app.use(`/api/v${currentEnvironment.API_VERSION}/bins`, BinRoutes);
 
