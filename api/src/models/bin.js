@@ -15,30 +15,30 @@ const binSchema = new mongoose.Schema(
     },
     binNumber: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
       trim: true,
     },
     capacity: {
-      type: Number, // in liters
-      required: true,
+      type: String, // in liters
+      // required: true,
       min: 0,
     },
     category: {
       type: String,
-      required: true,
+      // required: true,
       enum: Object.values(wasteCategories),
       default: wasteCategories.GENERAL,
     },
     material: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
-      enum: ["plastic", "metal", "concrete", "wood"],
+      // enum: ["plastic", "metal", "concrete", "wood"],
     },
     color: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     // location: {
@@ -65,7 +65,7 @@ const binSchema = new mongoose.Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // required: true,
     },
     sensor: {
       type: mongoose.Schema.Types.ObjectId,
@@ -85,7 +85,7 @@ const binSchema = new mongoose.Schema(
       {
         date: {
           type: Date,
-          required: true,
+          // required: true,
         },
         weight: {
           type: Number,

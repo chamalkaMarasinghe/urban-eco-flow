@@ -134,14 +134,14 @@ exports.createBin = catchAsync(async (req, res, next) => {
   }
 
   // Validate location
-  if (!location?.location || !location?.location?.coordinates) {
-    throw new AppError("Location with coordinates is required", 400, 400);
-  }
+  // if (!location?.location || !location?.location?.coordinates) {
+  //   throw new AppError("Location with coordinates is required", 400, 400);
+  // }
 
   const binData = {
     binNumber,
     capacity,
-    category: category || wasteCategories.GENERAL,
+    category: category?.toUpperCase() || wasteCategories.GENERAL,
     material,
     color,
     owner: req.user.id,

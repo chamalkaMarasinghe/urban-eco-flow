@@ -121,27 +121,29 @@ const Navbar = () => {
   const getProfileLinks = (isMobile = false) => {
     let links = [
       { path: "/user-profile", label: "My Profile" },
+      { path: "/all-orders", label: "My Orders" },
       { path: "/my-sensors", label: "My Sensors" },
+      { path: "/my-bins", label: "My Bins" },
       { path: "/", label: "Logout" },
     ];
 
     // Add My Wishlist link only for mobile view
-    if (isMobile) {
-      links = [
-        { path: "/user-profile", label: "My Profile" },
-        { path: "/my-wishlists", label: "Wish List" },
-        //TO-DO : missing my chat value
-        { path: "/chat", label: "My Chat", isChat: true },
-        { path: "/signin", label: "Logout" },
-      ];
-    }
+    // if (isMobile) {
+    //   links = [
+    //     { path: "/user-profile", label: "My Profile" },
+    //     { path: "/my-wishlists", label: "Wish List" },
+    //     //TO-DO : missing my chat value
+    //     { path: "/chat", label: "My Chat", isChat: true },
+    //     { path: "/signin", label: "Logout" },
+    //   ];
+    // }
 
-    const roleSpecificLink =
-      userRole === "client"
-        ? { path: "/all-orders", label: "My Orders" }
-        : { path: "/my-events", label: "My Events" };
+    // const roleSpecificLink =
+    //   userRole === "client"
+    //     ? { path: "/all-orders", label: "My Orders" }
+    //     : { path: "/my-events", label: "My Events" };
 
-    return [roleSpecificLink, ...links];
+    return [...links];
   };
 
   // Button configurations

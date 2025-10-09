@@ -16,7 +16,9 @@ import ClientHomePage from "../pages/ClientHome";
 import RequestCollection from "../pages/CollectionRequest";
 import Sensors from "../pages/Sensors";
 import MySensors from "../pages/MySensors";
+import MyBins from "../pages/MyBins";
 import MyProduction from "../pages/MyProduction";
+import CreateBins from "../pages/CreateBins";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
                 element: <ProtectedClientRoute/>,
                 children: [
                     {
+                        path: "/create-bin",
+                        element: <CreateBins/>,
+                    },
+                    {
                         path: "/collection-request",
                         element: <RequestCollection/>,
                     },
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
                     {
                         path: "/my-sensors",
                         element: <MySensors/>,
+                    },
+                    {
+                        path: "/my-bins",
+                        element: <MyBins />,
                     },
                     {
                         path: "/my-production",

@@ -17,55 +17,60 @@ import useFirebaseFileUpload from "../hooks/useFirebaseFileUpload";
 import showToast from "../utils/toastNotifications";
 import { useThunk } from "../hooks/useThunk";
 import { createCollectionRequest } from "../store/thunks/collectionRequest";
+import { createBin } from "../store/thunks/sensor";
 
 // Main Request Collection Page
-const RequestCollection = () => {
+const CreateBins = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        senderId: "",
+        binNumber: "",
         collectionType: "",
-        location: "",
-        serviceType: "regular",
+        capacity: "",
+        material: "",
         attachments: null,
     });
 
-    const [doUploadFilesToFirebase, isUploadingFiles, uploadFilesError] = useFirebaseFileUpload();
-    const [doCollectionRequest, isCollectionRequest, collectionRequestError] = useThunk(createCollectionRequest);
+    // const [doUploadFilesToFirebase, isUploadingFiles, uploadFilesError] = useFirebaseFileUpload();
+    const [doCreateBin, isCreateBin, errorCreateBin] = useThunk(createBin);
 
     const handleSubmit = async() => {
         
-        let attachment = [];
+        // let attachment = [];
 
-        // NOTE: Upload attachments if they exist and are File objects
-        if (formData?.attachments && formData?.attachments?.length > 0) {
+        // // NOTE: Upload attachments if they exist and are File objects
+        // if (formData?.attachments && formData?.attachments?.length > 0) {
 
-            const filesToUpload = formData?.attachments.filter(item =>
-                item instanceof File ||
-                (typeof item === "object" && item?.name && (item.type?.startsWith("image/") || item.type?.startsWith("application/")))
-            );
+        //     const filesToUpload = formData?.attachments.filter(item =>
+        //         item instanceof File ||
+        //         (typeof item === "object" && item?.name && (item.type?.startsWith("image/") || item.type?.startsWith("application/")))
+        //     );
 
-            if (filesToUpload?.length > 0) {
-                const uploadResult = await doUploadFilesToFirebase(
-                    filesToUpload,
-                    "collection-requests"
-                );
+        //     if (filesToUpload?.length > 0) {
+        //         const uploadResult = await doUploadFilesToFirebase(
+        //             filesToUpload,
+        //             "collection-requests"
+        //         );
 
-                if (!uploadResult?.success) {
-                    showToast("error", uploadResult?.error?.message || "File Upload Error");
-                }
+        //         if (!uploadResult?.success) {
+        //             showToast("error", uploadResult?.error?.message || "File Upload Error");
+        //         }
 
-                attachment = (uploadResult?.uploadedUrls || []).map(url => url);
-            } else {
-                attachment = [];
-            }
-        }
+        //         attachment = (uploadResult?.uploadedUrls || []).map(url => url);
+        //     } else {
+        //         attachment = [];
+        //     }
+        // }
 
-        const tempFormData = {...formData, urls: attachment};
-        if(attachment?.length > 0){
-            setFormData({...tempFormData});
-        }
+        const tempFormData = { 
+            ...formData,
+            category: formData.collectionType
+        };
 
-        const result = await doCollectionRequest(tempFormData);
+        // if(attachment?.length > 0){
+            // setFormData({...tempFormData});
+        // }
+
+        const result = await doCreateBin(tempFormData);
         if(result?.success){
             showToast("success", "Collection request was placed successfully");
         }else{
@@ -74,6 +79,7 @@ const RequestCollection = () => {
         
         console.log("Form submitted:", formData);        
         // Handle form submission
+        navigate("/");
     };
 
     const handleCancel = () => {
@@ -84,15 +90,15 @@ const RequestCollection = () => {
     console.log(formData);
     
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="flex flex-col">
             <div className="flex-1 bg-background py-12">
                 <div className="container mx-auto px-4 max-w-4xl">
                     <div className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            Request to Collect Garbage
+                            Create Bin
                         </h1>
                         <p className="text-muted-foreground text-lg">
-                            Request service, track status, stay clean.
+                            Create your own bin, place collection requests
                         </p>
                     </div>
 
@@ -100,17 +106,17 @@ const RequestCollection = () => {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="senderId">
-                                    Sender ID{" "}
+                                    Bin{" "}
                                     <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
-                                    id="senderId"
-                                    placeholder="Please Enter Sensor ID"
-                                    value={formData.senderId}
+                                    id="binNumber"
+                                    placeholder="Bin number / name"
+                                    value={formData.binNumber}
                                     onChange={(e) =>
                                         setFormData({
                                             ...formData,
-                                            senderId: e.target?.value,
+                                            binNumber: e.target?.value,
                                         })
                                     }
                                     required
@@ -160,59 +166,46 @@ const RequestCollection = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="location">Location</Label>
+                            <Label htmlFor="senderId">
+                                Material{" "}
+                                <span className="text-destructive">*</span>
+                            </Label>
                             <Input
-                                id="location"
-                                placeholder="Enter your location"
-                                value={formData.location}
+                                id="material"
+                                placeholder="Please Enter Material"
+                                value={formData.material}
                                 onChange={(e) =>
                                     setFormData({
                                         ...formData,
-                                        location: e.target?.value,
+                                        material: e.target?.value,
                                     })
                                 }
+                                required
                             />
                         </div>
 
-                        {/* <FileUpload /> */}
-                        <ImageUpload
-                            label= {"Hello"}
-                            labelStyle="font-roboto font-medium text-sm leading-[22px] tracking-[-0.006em] text-user-black"
-                            onFileUpload={(files) => {setFormData({...formData, attachments: files})}}
-                            uploadFiles={formData?.attachments || []}
-                            // onClick={() => {
-                            //     setTouched({...touched, attachment: true});
-                            //     setErrors({...errors, attachment: ''})
-                            // }}
-                            // onBlur={() => {
-                            //     let localTouched;
-                            //     setTouched(prev => {
-                            //         localTouched = prev;
-                            //         return prev
-                            //     })
-                            //     if(localTouched?.attachment && isAttachmentRequired && (!formData?.attachment || formData?.attachment?.length < 1 || Object?.keys(formData?.attachment)?.length < 1)){
-                            //         setErrors(prev => {
-                            //             const obj = {...prev, attachment: errorMessages.REQUIRED_FIELD};
-                            //             return obj;
-                            //         });
-                            //     }
-                            // }}
-                            // error={touched.attachment && errors.attachment}
-                            uploadText= {"Drop your images here or Browse"}
-                            dragText= {"Jpeg, jpg and png are allowed"}
-                            numberOfFiles={1}
-                            allowImageArrange={false}
-                            maximumSize={10}
-                            isForm={true}
-                            accept={[
-                                { mime: "application/pdf", extensions: [".pdf"] },
-                                { mime: "image/jpeg", extensions: [".jpg", ".jpeg"] },
-                                { mime: "image/png", extensions: [".png"] },
-                            ]}
-                        />
+                        <div className="space-y-4">
+                            <Label htmlFor="senderId">
+                                Capacity{" "}
+                                <span className="text-destructive">*</span>
+                            </Label>
+                            <Input
+                                id="capacity"
+                                placeholder="Please Enter Capacity"
+                                value={formData.capacity}
+                                onChange={(e) =>
+                                    setFormData({
+                                        ...formData,
+                                        capacity: e.target?.value,
+                                    })
+                                }
+                                required
+                            />
+
+                        </div>
 
                         <div className="space-y-4">
-                            <RadioGroup
+                            {/* <RadioGroup
                                 value={formData.serviceType}
                                 onValueChange={(value) =>
                                     setFormData({
@@ -277,7 +270,7 @@ const RequestCollection = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </RadioGroup>
+                            </RadioGroup> */}
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 justify-between pt-6">
@@ -291,8 +284,8 @@ const RequestCollection = () => {
                                 className="bg-primary text-white hover:bg-primary/90 sm:w-auto w-full px-5"
                                 buttonText="Submit"
                                 onClick={() => {handleSubmit()}}
-                                loading={isUploadingFiles}
-                                disabled={isUploadingFiles}
+                                loading={isCreateBin}
+                                disabled={isCreateBin}
                             />
                         </div>
                     </form>
@@ -302,4 +295,4 @@ const RequestCollection = () => {
     );
 };
 
-export default RequestCollection;
+export default CreateBins;

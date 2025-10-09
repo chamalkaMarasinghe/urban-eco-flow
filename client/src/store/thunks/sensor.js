@@ -17,11 +17,29 @@ export const getAllSensors = createAsyncThunk("sensor/getAll", async () => {
     return response.data;
 });
 
-//sensors/purchased
+//sensors/purchased of specif user
 export const getAllPurchasedSensors = createAsyncThunk(
     "sensor/getAllPurchased",
     async () => {
         const response = await api.get("sensors/purchased");
+        return response.data;
+    }
+);
+
+// NOTE: bins
+export const createBin = createAsyncThunk(
+    "bin/create",
+    async (data) => {
+        const response = await api.post("bins", data);
+        return response.data;
+    }
+);
+
+//created bins of specifi user
+export const getAllCreatedBins = createAsyncThunk(
+    "bin/getAllCreated",
+    async () => {
+        const response = await api.get("bins/my-bins?page=1&limit=1000");
         return response.data;
     }
 );

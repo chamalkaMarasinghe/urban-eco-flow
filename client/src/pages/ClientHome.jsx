@@ -20,8 +20,10 @@ const HeroSection = () => {
           <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Real-time sensor data powers efficient waste collection, cost savings, and a better environment for everyone.
           </p>
-          <div className="flex w-full justify-center">
+          <div className="flex flex-col md:flex-row w-full justify-center gap-3">
             <Button buttonText="Send CollectionRequest" width="w-full md:w-[30%]" onClick={() => navigate("/collection-request")}/>
+            <Button buttonText="Purchase Sensors" width="w-full md:w-[30%]" onClick={() => navigate("/devices")}/>
+            <Button buttonText="Create Bins" width="w-full md:w-[30%]" onClick={() => navigate("/create-bin")}/>
           </div>
         </div>
       </div>

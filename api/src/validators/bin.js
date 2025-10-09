@@ -10,36 +10,42 @@ exports.createBinValidator = [
     .notEmpty()
     .withMessage("Bin number is required")
     .isLength({ min: 3, max: 50 })
-    .withMessage("Bin number must be between 3 and 50 characters"),
+    .withMessage("Bin number must be between 3 and 50 characters")
+    .optional(),
   
   body("capacity")
     .notEmpty()
     .withMessage("Capacity is required")
-    .isFloat({ min: 0 })
-    .withMessage("Capacity must be a positive number"),
+    // .isFloat({ min: 0 })
+    .isString()
+    .withMessage("Capacity must be a positive number")
+    .optional(),
   
   body("category")
     .optional()
-    .isIn(Object.values(wasteCategories))
-    .withMessage("Invalid waste category"),
+    .isIn(Object.values(wasteCategories)?.map(it => it?.toLowerCase()))
+    .withMessage("Invalid waste category")
+    .optional(),
   
   body("material")
     .notEmpty()
     .withMessage("Material is required")
-    .isIn(["plastic", "metal", "concrete", "wood"])
-    .withMessage("Material must be one of: plastic, metal, concrete, wood"),
+    // .isIn(["plastic", "metal", "concrete", "wood"])
+    .withMessage("Material must be one of: plastic, metal, concrete, wood")
+    .optional(),
   
   body("color")
     .notEmpty()
     .withMessage("Color is required")
     .isLength({ min: 2, max: 50 })
-    .withMessage("Color must be between 2 and 50 characters"),
+    .withMessage("Color must be between 2 and 50 characters")
+    .optional(),
   
-  body("location")
-    .notEmpty()
-    .withMessage("Location is required")
-    .isObject()
-    .withMessage("Location must be an object"),
+  // body("location")
+  //   .notEmpty()
+  //   .withMessage("Location is required")
+  //   .isObject()
+  //   .withMessage("Location must be an object"),
   
   // body("location.longitude")
   //   .isFloat({ min: -180, max: 180 })
