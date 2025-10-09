@@ -24,7 +24,7 @@ export const ProtectedClientRoute = () => {
 
     // Render a blank outlet that will show the current route's UI
     // in the background while the modal is displayed on top
-    return <AuthenticationSkeleton />;
+    // return <AuthenticationSkeleton />;
   }
 
   return <Outlet />;

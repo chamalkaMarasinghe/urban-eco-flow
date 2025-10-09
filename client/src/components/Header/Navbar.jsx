@@ -222,7 +222,7 @@ const Navbar = () => {
             {/* <div className="flex items-center gap-4 ml-auto mr-6 bg-red-600 xl:gap-6 custom-w-br-1180:flex-shrink-0 custom-w-br-1180:ml-0 custom-w-br-1180:mr-0"> */}
             <div className={
               twMerge(
-                `flex items-center justify-end gap-4 xl:gap-6 w-full ml-auto mr-6`
+                `flex items-center justify-end gap-4 xl:gap-6 w-full ml-auto`
               )}>
               {NAV_LINKS.map(({ path, label }) => (
                 <Link
@@ -245,11 +245,11 @@ const Navbar = () => {
 
               {isAuthenticated ? (
                 /* Authenticated User UI */
-                <div className="flex items-center gap-1">
+                <div className="flex items-center">
                   {/* Wishlist icon*/}
 
                   {/* Chat Icon */}
-                  <ChatIcon viewType="desktop" />
+                  {/* <ChatIcon viewType="desktop" /> */}
 
                   {/* Avatar with Dropdown */}
                   <div className="relative">
@@ -273,7 +273,7 @@ const Navbar = () => {
                         fontSize={"16px"}
                         avatarSize={10}
                         loading={false}
-                        backgroundColor={"#F65F18"}
+                        backgroundColor={"#02a807"}
                         className="w-[33px] h-[33px] flex items-center justify-center rounded-full object-cover"
                       />
                     </button>
@@ -288,7 +288,7 @@ const Navbar = () => {
                           <Link
                             key={path}
                             to={path}
-                            className="px-4 py-3 text-[16px] font-roboto text-[#334155] hover:bg-gray-100 rounded-md hover:text-user-orange transition-colors duration-200"
+                            className="px-4 py-3 text-[16px] font-roboto text-[#334155] hover:bg-gray-100 rounded-md hover:text-primary transition-colors duration-200"
                             onClick={() => {
                               setIsDropdownOpen(false);
                               if (label === "Logout") {
@@ -452,7 +452,6 @@ const Navbar = () => {
                 }}
               />
             )}
- 
           </div>
         </div>
       </div>
