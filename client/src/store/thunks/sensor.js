@@ -43,3 +43,19 @@ export const getAllCreatedBins = createAsyncThunk(
         return response.data;
     }
 );
+
+export const attachSensorToBin = createAsyncThunk(
+    "bin/attachSensor",
+    async (data) => {
+        const response = await api.post(`bins/${data?.binId}/attach-sensor`, data);
+        return response.data;
+    }
+);
+
+export const detachSensorToBin = createAsyncThunk(
+    "bin/detachSensor",
+    async (data) => {
+        const response = await api.post(`bins/${data?.binId}/detach-sensor`);
+        return response.data;
+    }
+);

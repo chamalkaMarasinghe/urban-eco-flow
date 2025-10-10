@@ -37,7 +37,7 @@ const Sensors = () => {
     // Product Card Component
     const ProductCard = ({ title, price, image, imageAlt, _id, purchseSensor }) => {
         return (
-            <div className="bg-card rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+            <div className="bg-card rounded-lg shadow-md border-[1px] overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="p-6">
                     <h3 className="text-xl font-semibold text-card-foreground mb-2 text-center">
                         {title}
@@ -52,12 +52,12 @@ const Sensors = () => {
                             className="max-w-full h-auto object-contain max-h-[180px]"
                         />
                     </div>
-                    <button 
+                    {/* <button 
                         className="w-full bg-primary text-white py-3 rounded font-semibold hover:opacity-90 transition-opacity"
                         onClick={() => {purchseSensor(_id)}}
                     >
                         BUY NOW
-                    </button>
+                    </button> */}
                 </div>
             </div>
         );
