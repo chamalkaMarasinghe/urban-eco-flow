@@ -359,7 +359,12 @@ exports.getMyCollectionRequests = catchAsync(async (req, res, next) => {
     sort: { createdAt: -1 },
     populate: [
       { path: "collectionTeam", select: "firstName lastName email" },
-      { path: "bin", select: "binNumber category location" },
+      { 
+        path: "bin" ,
+        populate: {
+          path: "sensor",
+        },
+      },
     ],
   };
 

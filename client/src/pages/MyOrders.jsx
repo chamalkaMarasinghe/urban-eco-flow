@@ -10,15 +10,18 @@ import { format_MM_DD_YYYY } from "../utils/dateFormating";
 import Button from "../components/Reusable/CustomButton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/Reusable/Dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/Reusable/Select";
+import { getMyCollectionRequests } from "../store/thunks/collectionRequest";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { MdSensors } from "react-icons/md";
 
-const Sensors = () => {
+const MyOrders = () => {
     const [sensors, setSensors] = useState([]);
     const [sensorsPurchased, setSensorsPurchased] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBinId, setSelectedBinId] = useState(null);
     const [selectedSensor, setSelectedSensor] = useState("");
 
-    const [doGetAllCreatedBins, isGetAllCreatedBins, errorGetAllCreatedBins] = useThunk(getAllCreatedBins);
+    const [doGetAllPlacedCollectionRequests, isGetAllPlacedCollectionRequests, errorGetAllPlacedCollectionRequests] = useThunk(getMyCollectionRequests);
     const [doGetAllSensors, isGetAllSensors, errorGetAllSensors] = useThunk(getAllPurchasedSensors);
     const [doAttachSensor, isAttachSensor, errorAttachSensor] = useThunk(attachSensorToBin);
     const [doDetachSensor, isDetachSensor, errorDetachSensor] = useThunk(detachSensorToBin);
@@ -29,7 +32,7 @@ const Sensors = () => {
     }, [])
 
     const getAllBinsMethod = async() => {
-        const res = await doGetAllCreatedBins();
+        const res = await doGetAllPlacedCollectionRequests();
         console.log(res?.response?.data?.docs);
         
         if(res?.success){            
@@ -59,12 +62,7 @@ const Sensors = () => {
             showToast("error", "Please select a sensor");
             return;
         }
-        
-        // const sensorName = AVAILABLE_SENSORS.find(s => s.id === selectedSensor)?.name;
-        // showToast("success", `Sensor ${sensorName} attached successfully!`);
-        // setIsModalOpen(false);
-        // setSelectedSensor("");
-        // setSelectedBinId(null);
+
         const res = await doAttachSensor({binId: selectedBinId, sensorId: selectedSensor?._id});
         if(res?.success){
             showToast("success", "Sensor Attached Successfully");
@@ -83,11 +81,6 @@ const Sensors = () => {
             return;
         }
         
-        // const sensorName = AVAILABLE_SENSORS.find(s => s.id === selectedSensor)?.name;
-        // showToast("success", `Sensor ${sensorName} attached successfully!`);
-        // setIsModalOpen(false);
-        // setSelectedSensor("");
-        // setSelectedBinId(null);
         const res = await doDetachSensor({binId: id});
         if(res?.success){
             showToast("success", "Sensor Detached Successfully");
@@ -107,10 +100,10 @@ const Sensors = () => {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-8">
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-                            My Bins
+                            My Collection Requeste Orders
                         </h1>
                         <p className="text-lg sm:text-xl text-muted-foreground">
-                            The list of created bins
+                            The list of placed collection requests
                         </p>
                     </div>
                     <div className="w-full max-w-5xl mx-auto rounded-lg overflow-hidden">
@@ -128,35 +121,57 @@ const Sensors = () => {
     // Product Card Component
     const ProductCard = ({ title, price, image, imageAlt, _id, purchseSensor, data }) => {
         return (
-            <div className="relative bg-card rounded-lg shadow-md border-[1px] overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="p-6">
-                    <div className="flex flex-row w-full justify-start">
-                        <h3 className="text-[1.4rem] font-semibold text-card-foreground text-center">
-                            {data?.binNumber}
+            <div className="relative flex flex-col sm:flex-row bg-card rounded-lg shadow-md border-[1px] overflow-hidden hover:shadow-xl transition-shadow">
+                <div className="flex w-full sm:w-[30%]">
+                    <img
+                        src={data?.attachment}
+                        className="object-cover"
+                    />
+                </div>
+                <div className="flex flex-col w-full sm:w-[70%] p-6 flex-grow h-[100%]">
+                    <div className="relative flex flex-row w-full justify-between mb-1">
+                        <h3 className="leading-[18px] max-w-[80%] text-[1.4rem] font-semibold text-gray-700 text-start">
+                            {data?.requestNumber}
                         </h3>
+                        <div className="absolute flex right-0 justify-center items-center p-2 border-[1px] border-primary rounded-[5px] text-[12px] lowercase">
+                            {data?.status}
+                        </div>
                     </div>
                     <div className="flex flex-row w-full justify-start">
-                        <p className="font-bold text-center mb-2">
-                            {data?.material}
+                        <p className="flex flex-row font-bold text-center mb-2 text-gray-500">
+                            {data?.type} - <span className="flex items-center lowercase text-[14px] text-primary ml-1">{data?.priority}</span>
                         </p>
                     </div>
-                    <div className="flex flex-row justify-between">
-                        <p className=" text-center mb-6">
-                            {data?.capacity}
+                    <div className="flex flex-row w-full justify-start items-center">
+                        <span className="mt-1 text-primary mr-2"><RiDeleteBin5Line /></span>
+                        <p className="font-[600] text-center -mb-1 text-gray-500">
+                            {data?.bin?.binNumber}
                         </p>
-                        <p className=" text-center">
+                    </div>
+                    <div className="flex flex-row w-full justify-start items-center">
+                        <span className="-mt-1 text-primary mr-2"><MdSensors /></span>
+                        <p className="font-[600] text-center mb-2 text-gray-500">
+                            {data?.bin?.sensor?.serialNumber}
+                        </p>
+                    </div>
+                    <div className="flex flex-row justify-between text-gray-500">
+                        <p className="flex flex-row justify-start items-start text-start">
+                            {data?.location?.address}
+                        </p>
+                        <p className="flex flex-row justify-start text-end">
                             {format_MM_DD_YYYY(data?.createdAt)}
                         </p>
                     </div>
-                    {
+                    {/* {
                         data?.sensor &&
                         <div className="absolute flex flex-row w-full justify-start -translate-y-6">
                             <p className="text-[14px] font-bold text-center mb-2 text-primary">
                                 attached {data?.sensor?.serialNumber} 
                             </p>
                         </div>
-                    }
-                    <div>
+                    } */}
+                    {/* <div className="flex flex-col flex-grow"></div> */}
+                    {/* <div>
                         {
                             data?.sensor && (
                                 <Button 
@@ -174,7 +189,7 @@ const Sensors = () => {
                                 />
                             )
                         }
-                    </div>
+                    </div> */}
                 </div>
             </div>
         );
@@ -185,7 +200,7 @@ const Sensors = () => {
         return (
             <section className="bg-background pb-12 sm:pb-16 lg:pb-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
                         {sensors?.map((product, index) => (
                             <ProductCard
                                 key={index}
@@ -245,5 +260,4 @@ const Sensors = () => {
     );
 };
 
-export default Sensors;
-
+export default MyOrders;

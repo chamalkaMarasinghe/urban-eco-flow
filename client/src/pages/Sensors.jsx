@@ -65,29 +65,8 @@ const Sensors = () => {
 
     // Products Section Component
     const ProductsSection = ({sensors, purchseSensor}) => {
-        const products = [
-            {
-                title: "Weighted Sensors",
-                price: 10.0,
-                image: weightedSensor,
-                imageAlt: "Weighted sensor device",
-            },
-            {
-                title: "Volumed Sensors",
-                price: 20.0,
-                image: volumeSensor,
-                imageAlt: "Volume sensor circuit board",
-            },
-            {
-                title: "Fill Detecting Sensors",
-                price: 50.0,
-                image: fillSensor,
-                imageAlt: "Fill detection sensor with circuit board",
-            },
-        ];
-
         return (
-            <section className="bg-background py-12 sm:py-16 lg:py-20">
+            <section className="bg-background pb-12 sm:pb-16 lg:pb-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
                         {sensors?.map((product, index) => (

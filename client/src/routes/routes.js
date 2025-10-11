@@ -19,6 +19,7 @@ import MySensors from "../pages/MySensors";
 import MyBins from "../pages/MyBins";
 import MyProduction from "../pages/MyProduction";
 import CreateBins from "../pages/CreateBins";
+import MyOrders from "../pages/MyOrders";
 
 const router = createBrowserRouter([
     {
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
                     {
                         path: "/my-bins",
                         element: <MyBins />,
+                    },
+                    {
+                        path: "/all-orders",
+                        element: <MyOrders />,
                     },
                     {
                         path: "/my-production",

@@ -66,7 +66,7 @@ const Sensors = () => {
     // Products Section Component
     const ProductsSection = ({sensors, purchseSensor}) => {
         return (
-            <section className="bg-background py-12 sm:py-16 lg:py-20">
+            <section className="bg-background pb-12 sm:pb-16 lg:pb-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
                         {sensors?.map((product, index) => (
