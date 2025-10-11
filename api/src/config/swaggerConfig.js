@@ -86,10 +86,11 @@ const options = {
                     type: 'object',
                     properties: {
                         id: { type: 'string' },
-                        requestNumber: { type: 'string' },
-                        type: { type: 'string', enum: ['NORMAL', 'SPECIAL', 'BULKY_ITEMS', 'E_WASTE', 'HAZARDOUS', 'URGENT'] },
-                        status: { type: 'string', enum: ['PENDING', 'SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', 'FAILED'] },
-                        priority: { type: 'string', enum: ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] },
+                        title: { type: 'string', example: "My collection request 001" },
+                        requestNumber: { type: 'string', example: "My collection request 001" },
+                        type: { type: 'string', example: "GENERAL"},
+                        status: { type: 'string', example: "PENDING"},
+                        priority: { type: 'string', example: "REGULAR"},
                         requester: { type: 'string' },
                         bin: { type: 'string' },
                         location: {
@@ -97,7 +98,7 @@ const options = {
                             properties: {
                                 type: { type: 'string', enum: ['Point'] },
                                 coordinates: { type: 'array', items: { type: 'number' }, example: ["5", "5"] },
-                                address: { type: 'string' },
+                                address: { type: 'string', example: "Colombo. Nugeggoda" },
                                 longitude: { type: 'string', example: "5" },
                                 latitude: { type: 'string', example: "5" }
                             }
@@ -105,14 +106,15 @@ const options = {
                         wasteDetails: {
                             type: 'object',
                             properties: {
-                                category: { type: 'string', enum: ['ORGANIC', 'RECYCLABLE', 'GENERAL', 'HAZARDOUS', 'E_WASTE', 'BULKY'] },
+                                category: { type: 'string', example: "GENERAL"},
                                 description: { type: 'string' },
                                 estimatedWeight: { type: 'number', minimum: 0 },
                                 estimatedVolume: { type: 'number', minimum: 0 }
                             }
                         },
                         scheduledDate: { type: 'string', format: 'date-time' },
-                        collectionTeam: { type: 'string' }
+                        collectionTeam: { type: 'string' },
+                        attachment: {type: "string", example: "https://firebasestorage.googleapis.com/v0/b/realstate-aa106.appspot.com/o/collection-requests%2F1760025951908volume-sensor.jpg?alt=media&token=0e631f4e-0555-4bba-90be-ff55d300dee1"}
                     }
                 },
                 User: {

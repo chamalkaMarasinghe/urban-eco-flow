@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import  Button from "../components/Reusable/CustomButton";
 import  Input  from "../components/Reusable/CustomInput";
 import  Label  from "../components/Reusable/label";
@@ -17,20 +17,37 @@ import useFirebaseFileUpload from "../hooks/useFirebaseFileUpload";
 import showToast from "../utils/toastNotifications";
 import { useThunk } from "../hooks/useThunk";
 import { createCollectionRequest } from "../store/thunks/collectionRequest";
+import { getAllCreatedBins } from "../store/thunks/sensor";
 
 // Main Request Collection Page
 const RequestCollection = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         senderId: "",
+        bin: "",
         collectionType: "",
         location: "",
         serviceType: "regular",
         attachments: null,
     });
+    const [bins, setBins] = useState([]);
 
     const [doUploadFilesToFirebase, isUploadingFiles, uploadFilesError] = useFirebaseFileUpload();
     const [doCollectionRequest, isCollectionRequest, collectionRequestError] = useThunk(createCollectionRequest);
+    const [doGetAllCreatedBins, isGetAllCreatedBins, errorGetAllCreatedBins] = useThunk(getAllCreatedBins);
+
+    useEffect(() => {
+        getAllBinsMethod();
+    }, [])
+
+    const getAllBinsMethod = async() => {
+        const res = await doGetAllCreatedBins();        
+        if(res?.success){            
+            setBins(res?.response?.data?.docs || []);
+        }else{
+            showToast("error", res?.error?.message || "Error Occurred");
+        }
+    }
 
     const handleSubmit = async() => {
         
@@ -60,7 +77,26 @@ const RequestCollection = () => {
             }
         }
 
-        const tempFormData = {...formData, urls: attachment};
+        const tempFormData = {
+            ...formData, 
+            attachment: attachment?.[0],
+            title: formData?.senderId,
+            bin: "68e82e1b726cdc301a5126af",
+            location: {
+                "type": "Point",
+                "coordinates": [
+                    "5",
+                    "5"
+                ],
+                "address": formData?.location,
+                "longitude": "5",
+                "latitude": "5"
+            },
+
+            type: formData?.collectionType?.toUpperCase(),
+            priority: formData?.serviceType?.toUpperCase(),
+        };
+
         if(attachment?.length > 0){
             setFormData({...tempFormData});
         }
@@ -68,6 +104,14 @@ const RequestCollection = () => {
         const result = await doCollectionRequest(tempFormData);
         if(result?.success){
             showToast("success", "Collection request was placed successfully");
+            setFormData({
+                senderId: "",
+                bin: "",
+                collectionType: "",
+                location: "",
+                serviceType: "regular",
+                attachments: null,
+            })
         }else{
             showToast("error", result?.error?.message || "Error occrred during placing the collection request")
         }
@@ -77,11 +121,16 @@ const RequestCollection = () => {
     };
 
     const handleCancel = () => {
+        setFormData({
+            senderId: "",
+            bin: "",
+            collectionType: "",
+            location: "",
+            serviceType: "regular",
+            attachments: null,
+        })
         navigate("/");
     };
-
-    console.log("formdata outside");
-    console.log(formData);
     
     return (
         <div className="min-h-screen flex flex-col">
@@ -100,12 +149,12 @@ const RequestCollection = () => {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="senderId">
-                                    Sender ID{" "}
+                                    Request Name{" "}
                                     <span className="text-destructive">*</span>
                                 </Label>
                                 <Input
                                     id="senderId"
-                                    placeholder="Please Enter Sensor ID"
+                                    placeholder="Please name the request"
                                     value={formData.senderId}
                                     onChange={(e) =>
                                         setFormData({
@@ -159,19 +208,49 @@ const RequestCollection = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="location">Location</Label>
-                            <Input
-                                id="location"
-                                placeholder="Enter your location"
-                                value={formData.location}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        location: e.target?.value,
-                                    })
-                                }
-                            />
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="collectionType">
+                                    Bin{" "}
+                                    <span className="text-destructive">*</span>
+                                </Label>
+                                <Select
+                                    value={formData.bin}
+                                    onValueChange={(value) =>
+                                        setFormData({
+                                            ...formData,
+                                            bin: value,
+                                        })
+                                    }
+                                    required
+                                >
+                                    <SelectTrigger id="collectionType">
+                                        <SelectValue placeholder="Select your bin" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {bins?.map((item) => (
+                                            <SelectItem key={item?._key} value={item?._id}>
+                                                {item?.binNumber}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="location">Location</Label>
+                                <Input
+                                    id="location"
+                                    placeholder="Enter your location"
+                                    value={formData.location}
+                                    onChange={(e) =>
+                                        setFormData({
+                                            ...formData,
+                                            location: e.target?.value,
+                                        })
+                                    }
+                                    required
+                                />
+                            </div>
                         </div>
 
                         {/* <FileUpload /> */}
@@ -180,24 +259,6 @@ const RequestCollection = () => {
                             labelStyle="font-roboto font-medium text-sm leading-[22px] tracking-[-0.006em] text-user-black"
                             onFileUpload={(files) => {setFormData({...formData, attachments: files})}}
                             uploadFiles={formData?.attachments || []}
-                            // onClick={() => {
-                            //     setTouched({...touched, attachment: true});
-                            //     setErrors({...errors, attachment: ''})
-                            // }}
-                            // onBlur={() => {
-                            //     let localTouched;
-                            //     setTouched(prev => {
-                            //         localTouched = prev;
-                            //         return prev
-                            //     })
-                            //     if(localTouched?.attachment && isAttachmentRequired && (!formData?.attachment || formData?.attachment?.length < 1 || Object?.keys(formData?.attachment)?.length < 1)){
-                            //         setErrors(prev => {
-                            //             const obj = {...prev, attachment: errorMessages.REQUIRED_FIELD};
-                            //             return obj;
-                            //         });
-                            //     }
-                            // }}
-                            // error={touched.attachment && errors.attachment}
                             uploadText= {"Drop your images here or Browse"}
                             dragText= {"Jpeg, jpg and png are allowed"}
                             numberOfFiles={1}

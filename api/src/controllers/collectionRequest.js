@@ -126,6 +126,7 @@ exports.getCollectionRequestById = catchAsync(async (req, res, next) => {
  */
 exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   const {
+    title,
     type,
     priority,
     bin,
@@ -134,7 +135,7 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
     scheduledDate,
     scheduledTimeSlot,
     specialInstructions,
-    attachments,
+    attachment,
   } = req.body;
 
   console.log('location =========================');
@@ -160,9 +161,9 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   }
 
   const requestData = {
-    requestNumber: "003",
-    type: type || collectionRequestTypes.NORMAL,
-    priority: priority || priorityLevels.MEDIUM,
+    requestNumber: title || "Default Title" ,
+    type: type || wasteCategories.GENERAL,
+    priority: priority || priorityLevels.REGULAR,
     requester: req.user.id,
     location: {
       type: "Point",
@@ -171,12 +172,13 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
       landmark: location.landmark,
     },
     wasteDetails: {
-      category: wasteDetails.category,
-      description: wasteDetails.description,
-      estimatedWeight: wasteDetails.estimatedWeight,
-      estimatedVolume: wasteDetails.estimatedVolume,
+      category: wasteCategories.GENERAL,
+      description: wasteDetails?.description,
+      estimatedWeight: wasteDetails?.estimatedWeight,
+      estimatedVolume: wasteDetails?.estimatedVolume,
       specialInstructions: specialInstructions,
     },
+    attachment
   };
 
   if (bin) {
@@ -202,11 +204,11 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   const request = await CollectionRequest.create(requestData);
 
   // Add attachments if provided
-  if (attachments && attachments.length > 0) {
-    for (const attachment of attachments) {
-      await request.addAttachment(attachment);
-    }
-  }
+  // if (attachments && attachments.length > 0) {
+  //   for (const attachment of attachments) {
+  //     await request.addAttachment(attachment);
+  //   }
+  // }
 
   const populatedRequest = await CollectionRequest.findById(request._id)
     .populate("requester", "firstName lastName email phoneNumber")

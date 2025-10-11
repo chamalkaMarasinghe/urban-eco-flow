@@ -113,8 +113,7 @@ exports.wasteCategories = {
 };
 
 exports.priorityLevels = {
-  LOW: "LOW",
-  MEDIUM: "MEDIUM",
-  HIGH: "HIGH",
+  REGULAR: "REGULAR",
+  SCHEDULED: "SCHEDULED",
   URGENT: "URGENT",
 };

@@ -19,6 +19,9 @@ const collectionRequestSchema = new mongoose.Schema(
       // required: true,
       // unique: true,
     },
+    attachment: {
+      type: String,
+    },
     requestNumber: {
       type: String,
       // required: true,
@@ -27,8 +30,8 @@ const collectionRequestSchema = new mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: Object.values(collectionRequestTypes),
-      default: collectionRequestTypes.NORMAL,
+      enum: Object.values(wasteCategories),
+      default: wasteCategories.GENERAL,
     },
     status: {
       type: String,
@@ -40,7 +43,7 @@ const collectionRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: Object.values(priorityLevels),
-      default: priorityLevels.MEDIUM,
+      default: priorityLevels.REGULAR,
     },
     requester: {
       type: mongoose.Schema.Types.ObjectId,
@@ -230,10 +233,10 @@ collectionRequestSchema.pre("save", async function (next) {
   if (this.isNew && !this.id) {
     this.id = await getNewID("CollectionRequest");
   }
-  if (this.isNew && !this.requestNumber) {
-    const timestamp = Date.now().toString().slice(-6);
-    this.requestNumber = `CR${timestamp}`;
-  }
+  // if (this.isNew && !this.requestNumber) {
+  //   const timestamp = Date.now().toString().slice(-6);
+  //   this.requestNumber = `CR${timestamp}`;
+  // }
   next();
 });
 
