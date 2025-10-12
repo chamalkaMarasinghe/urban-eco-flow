@@ -19,3 +19,11 @@ export const getMyCollectionRequests = createAsyncThunk(
     return response.data;
   }
 );
+
+export const getMyCollectionRequestsAnalytics = createAsyncThunk(
+  "collectionRequest/getMyCollectionRequestsAnalytics",
+  async () => {
+    const response = await api.get("collection-requests/analytics");
+    return response.data;
+  }
+);

@@ -1,4 +1,4 @@
-import heroImage from "../assets/images/smart-city-hero.jpg";
+import heroImage from "../assets/images/recycling-bins.jpg";
 import weightedSensor from "../assets/images/weighted-sensor.jpg";
 import volumeSensor from "../assets/images/volume-sensor.jpg";
 import fillSensor from "../assets/images/fill-sensor.jpg";

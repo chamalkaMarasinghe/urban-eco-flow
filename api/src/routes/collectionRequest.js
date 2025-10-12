@@ -14,6 +14,7 @@ const {
   getUrgentCollectionRequests,
   cancelCollectionRequest,
   addAttachment,
+  getCollectionAnalytics,
 } = require("../controllers/collectionRequest");
 const { authenticateUser } = require("../middlewares/authenticateUser");
 const { authorizeRoles } = require("../middlewares/authorizeRoles");
@@ -49,6 +50,9 @@ router.use(authenticateUser());
 
 // Routes for all authenticated users (docs in src/docs/collectionRequestDocs.js)
 router.get("/my-requests", getMyCollectionRequests);
+
+// Get user's collection analytics (docs in src/docs/collectionRequestDocs.js)
+router.get("/analytics", authorizeRoles([roles.RESIDENT, roles.BUSINESS, roles.USER]), getCollectionAnalytics);
 
 // Get collection request by ID (docs: src/docs/collectionRequestDocs.js)
 router.get("/:id", getCollectionRequestById);

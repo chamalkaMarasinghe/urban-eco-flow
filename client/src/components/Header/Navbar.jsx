@@ -120,7 +120,7 @@ const Navbar = () => {
   // Profile dropdown links configuration
   const getProfileLinks = (isMobile = false) => {
     let links = [
-      { path: "/user-profile", label: "My Profile" },
+      // { path: "/user-profile", label: "My Profile" },
       { path: "/all-orders", label: "My Orders" },
       { path: "/my-sensors", label: "My Sensors" },
       { path: "/my-bins", label: "My Bins" },

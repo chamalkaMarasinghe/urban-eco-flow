@@ -5,6 +5,7 @@ const Sensor = require("../models/sensor");
 const Bin = require("../models/bin");
 const User = require("../models/user");
 const handleResponse = require("../utils/response/response");
+const collectionRequestService = require("../services/collectionRequestService");
 const {
   RecordNotFoundError,
   ValidationError,
@@ -537,6 +538,19 @@ exports.addAttachment = catchAsync(async (req, res, next) => {
   await request.addAttachment(attachmentData);
 
   return handleResponse(res, 200, "Attachment added successfully", request);
+});
+
+/**
+ * @desc    Get user's garbage collection analytics
+ * @route   GET /api/v1/collection-requests/analytics
+ * @access  Private (Resident, Business)
+ */
+exports.getCollectionAnalytics = catchAsync(async (req, res, next) => {
+  const userId = req.user.id;
+  
+  const chartData = await collectionRequestService.getUserCollectionAnalytics(userId);
+
+  return handleResponse(res, 200, "Collection analytics retrieved successfully", chartData);
 });
 
 // Helper function to calculate special request fees

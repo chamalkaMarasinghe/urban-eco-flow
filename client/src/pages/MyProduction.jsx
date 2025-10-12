@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {ChevronDown} from "lucide-react";
 import {
     LineChart,
@@ -9,18 +9,31 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+import { getMyCollectionRequestsAnalytics } from "../store/thunks/collectionRequest";
+import { useThunk } from "../hooks/useThunk";
+import showToast from "../utils/toastNotifications";
 
 const MyProduction = () => {
     // Sample data for the chart
-    const chartData = [
-        { date: "19th Feb", value: 1400 },
-        { date: "20th Feb", value: 1100 },
-        { date: "21st Feb", value: 2100 },
-        { date: "Feb 22nd", value: 1800 },
-        { date: "Feb 23rd", value: 1500 },
-        { date: "Feb 24th", value: 1900 },
-        { date: "Feb 25th", value: 1500 },
-    ];
+    const [chartData, setChartData] = useState([]);
+
+    const [doGetAnalytics, isGetAnalytics, errorGetAnalytics] = useThunk(getMyCollectionRequestsAnalytics);
+
+    useEffect(() => {
+        getCollectionRequestsAnalyticsMethod();
+    }, [])
+
+    const getCollectionRequestsAnalyticsMethod = async() => {
+        const res = await doGetAnalytics();        
+        if(res?.success){
+            console.log(res?.response?.data);
+                        
+            setChartData(res?.response?.data || []);
+        }else{
+            showToast("error", res?.error?.message || "Error Occurred");
+        }
+    }
+    
 
     // Hero Section Component
     const HeroSection = () => {
@@ -53,14 +66,14 @@ const MyProduction = () => {
                             <h2 className="text-xl sm:text-2xl font-semibold text-card-foreground">
                                 Garbage levels
                             </h2>
-                            <div className="relative">
+                            {/* <div className="relative">
                                 <button className="flex items-center gap-2 px-4 py-2 border border-border rounded hover:bg-accent transition-colors">
                                     <span className="text-foreground">
                                         {selectedPeriod}
                                     </span>
                                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Chart */}
@@ -126,9 +139,9 @@ const MyProduction = () => {
 
                         {/* See More Button */}
                         <div className="text-center">
-                            <button className="px-8 py-3 bg-primary text-white rounded font-semibold hover:opacity-90 transition-opacity">
+                            {/* <button className="px-8 py-3 bg-primary text-white rounded font-semibold hover:opacity-90 transition-opacity">
                                 SEE MORE
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

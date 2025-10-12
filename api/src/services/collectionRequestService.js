@@ -567,6 +567,89 @@ class CollectionRequestService {
   }
 
   /**
+   * Get user's garbage collection analytics
+   * @param {string} userId - User ID
+   * @returns {Promise<Array>} Chart data for garbage collection analytics (always 7 days)
+   */
+  async getUserCollectionAnalytics(userId) {
+    try {
+      // Fetch user's collection requests with populated bin data
+      const collectionRequests = await CollectionRequest.find({
+        requester: userId,
+        isDeleted: { $ne: true },
+        bin: { $exists: true, $ne: null }
+      })
+        .populate('bin', 'capacity')
+        .select('createdAt bin')
+        .sort({ createdAt: 1 });
+
+      // Group collection requests by date and sum capacity values
+      const dateCapacityMap = new Map();
+
+      collectionRequests.forEach(request => {
+        if (request.bin && request.bin.capacity) {
+          const date = new Date(request.createdAt);
+          const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+          const capacity = parseFloat(request.bin.capacity) || 0;
+
+          if (dateCapacityMap.has(dateKey)) {
+            dateCapacityMap.set(dateKey, dateCapacityMap.get(dateKey) + capacity);
+          } else {
+            dateCapacityMap.set(dateKey, capacity);
+          }
+        }
+      });
+
+      // Generate exactly 7 days of data (today + previous 6 days)
+      const chartData = [];
+      const today = new Date();
+      
+      for (let i = 6; i >= 0; i--) {
+        const targetDate = new Date(today);
+        targetDate.setDate(targetDate.getDate() - i);
+        const dateKey = targetDate.toISOString().split('T')[0];
+        
+        const formattedDate = this.formatDateForChart(targetDate);
+        const value = dateCapacityMap.has(dateKey) ? Math.round(dateCapacityMap.get(dateKey) * 100) / 100 : 0;
+        
+        chartData.push({
+          date: formattedDate,
+          value: value
+        });
+      }
+
+      logBusinessEvent('collection_analytics_generated', {
+        userId,
+        dataPoints: chartData.length,
+        totalCapacity: chartData.reduce((sum, item) => sum + item.value, 0)
+      });
+
+      return chartData;
+    } catch (error) {
+      logError(error, { operation: 'getUserCollectionAnalytics', userId });
+      throw error;
+    }
+  }
+
+  /**
+   * Format date for chart display
+   * @param {Date} date - Date to format
+   * @returns {string} Formatted date string
+   */
+  formatDateForChart(date) {
+    const day = date.getDate();
+    const month = date.toLocaleString('default', { month: 'short' });
+    
+    // Add ordinal suffix to day
+    let suffix = 'th';
+    if (day === 1 || day === 21 || day === 31) suffix = 'st';
+    else if (day === 2 || day === 22) suffix = 'nd';
+    else if (day === 3 || day === 23) suffix = 'rd';
+
+    return `${day}${suffix} ${month}`;
+  }
+
+  /**
    * Calculate special request fee
    * @param {string} type - Request type
    * @param {Object} wasteDetails - Waste details
