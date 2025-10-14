@@ -246,9 +246,9 @@ class BinService {
       }
 
       // Check if sensor is already attached to another bin
-      if (sensor.bin && sensor.bin.toString() !== bin._id.toString()) {
-        throw new BadRequestError('Sensor is already attached to another bin');
-      }
+      // if (sensor.bin && sensor.bin.toString() !== bin._id.toString()) {
+      //   throw new BadRequestError('Sensor is already attached to another bin');
+      // }
 
       // Update bin
       bin.sensor = sensor._id;

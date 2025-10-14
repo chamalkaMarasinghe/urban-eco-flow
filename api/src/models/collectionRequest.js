@@ -22,6 +22,9 @@ const collectionRequestSchema = new mongoose.Schema(
     attachment: {
       type: String,
     },
+    collectionRequestOriginType: {
+      type: String
+    },
     requestNumber: {
       type: String,
       // required: true,

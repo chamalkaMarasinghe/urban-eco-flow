@@ -18,11 +18,13 @@ import showToast from "../utils/toastNotifications";
 import { useThunk } from "../hooks/useThunk";
 import { createCollectionRequest } from "../store/thunks/collectionRequest";
 import { getAllCreatedBins } from "../store/thunks/sensor";
+import { collectionRequestOriginTypes } from "../constants/commonConstants";
 
 // Main Request Collection Page
 const RequestCollection = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        collectionRequestOriginType: collectionRequestOriginTypes.NORMAL,
         senderId: "",
         bin: "",
         collectionType: "",
@@ -50,12 +52,16 @@ const RequestCollection = () => {
     }
 
     const handleSubmit = async() => {
+
+        if(!formData.bin || formData?.bin?.length < 1){
+            showToast("error", "Please select a bin");
+            return;
+        }
         
         let attachment = [];
 
         // NOTE: Upload attachments if they exist and are File objects
         if (formData?.attachments && formData?.attachments?.length > 0) {
-
             const filesToUpload = formData?.attachments.filter(item =>
                 item instanceof File ||
                 (typeof item === "object" && item?.name && (item.type?.startsWith("image/") || item.type?.startsWith("application/")))
@@ -79,9 +85,9 @@ const RequestCollection = () => {
 
         const tempFormData = {
             ...formData, 
-            attachment: attachment?.[0],
+            attachment: formData.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL ?  attachment?.[0] : "https://png.pngtree.com/thumb_back/fh260/background/20240409/pngtree-concept-of-plastic-waste-and-pollution-from-plastic-waste-image_15651772.jpg",
             title: formData?.senderId,
-            bin: "68e82e1b726cdc301a5126af",
+            bin: formData.bin,
             location: {
                 "type": "Point",
                 "coordinates": [
@@ -103,7 +109,7 @@ const RequestCollection = () => {
 
         const result = await doCollectionRequest(tempFormData);
         if(result?.success){
-            showToast("success", "Collection request was placed successfully");
+            // showToast("success", "Collection request was placed successfully");
             setFormData({
                 senderId: "",
                 bin: "",
@@ -115,6 +121,7 @@ const RequestCollection = () => {
         }else{
             showToast("error", result?.error?.message || "Error occrred during placing the collection request")
         }
+        showToast("success", "Collection request was placed successfully");
         
         console.log("Form submitted:", formData);        
         // Handle form submission
@@ -143,6 +150,55 @@ const RequestCollection = () => {
                         <p className="text-muted-foreground text-lg">
                             Request service, track status, stay clean.
                         </p>
+                    </div>
+                    <div className="flex flex-col">
+                        <div className="flex flex-row">
+                            <RadioGroup
+                                value={formData.collectionRequestOriginType}
+                                onValueChange={(value) =>
+                                    setFormData({
+                                        ...formData,
+                                        collectionRequestOriginType: value,
+                                    })
+                                }
+                                className="flex flex-row mb-[40px] gap-[30px] w-full"
+                            >
+                                <div className="flex items-start space-x-3">
+                                    <RadioGroupItem
+                                        value={collectionRequestOriginTypes.NORMAL}
+                                        id={collectionRequestOriginTypes.NORMAL}
+                                        className="mt-1"
+                                    />
+                                    <div>
+                                        <Label
+                                            htmlFor={collectionRequestOriginTypes.NORMAL}
+                                            className="font-semibold cursor-pointer"
+                                        >
+                                            {collectionRequestOriginTypes.NORMAL}
+                                        </Label>
+                                        {/* <p className="text-sm text-muted-foreground">
+                                            {collectionRequestOriginTypes.NORMAL}
+                                        </p> */}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start space-x-3">
+                                    <RadioGroupItem
+                                        value={collectionRequestOriginTypes.SPECIAL}
+                                        id={collectionRequestOriginTypes.SPECIAL}
+                                        className="mt-1"
+                                    />
+                                    <div>
+                                        <Label
+                                            htmlFor={collectionRequestOriginTypes.SPECIAL}
+                                            className="font-semibold cursor-pointer"
+                                        >
+                                            {collectionRequestOriginTypes.SPECIAL}
+                                        </Label>
+                                    </div>
+                                </div>
+                            </RadioGroup>
+                        </div>
                     </div>
 
                     <form className="space-y-6">
@@ -254,23 +310,27 @@ const RequestCollection = () => {
                         </div>
 
                         {/* <FileUpload /> */}
-                        <ImageUpload
-                            label= {"Hello"}
-                            labelStyle="font-roboto font-medium text-sm leading-[22px] tracking-[-0.006em] text-user-black"
-                            onFileUpload={(files) => {setFormData({...formData, attachments: files})}}
-                            uploadFiles={formData?.attachments || []}
-                            uploadText= {"Drop your images here or Browse"}
-                            dragText= {"Jpeg, jpg and png are allowed"}
-                            numberOfFiles={1}
-                            allowImageArrange={false}
-                            maximumSize={10}
-                            isForm={true}
-                            accept={[
-                                { mime: "application/pdf", extensions: [".pdf"] },
-                                { mime: "image/jpeg", extensions: [".jpg", ".jpeg"] },
-                                { mime: "image/png", extensions: [".png"] },
-                            ]}
-                        />
+                        {
+                            formData.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL && (
+                                <ImageUpload
+                                    label= {"Hello"}
+                                    labelStyle="font-roboto font-medium text-sm leading-[22px] tracking-[-0.006em] text-user-black"
+                                    onFileUpload={(files) => {setFormData({...formData, attachments: files})}}
+                                    uploadFiles={formData?.attachments || []}
+                                    uploadText= {"Drop your images here or Browse"}
+                                    dragText= {"Jpeg, jpg and png are allowed"}
+                                    numberOfFiles={1}
+                                    allowImageArrange={false}
+                                    maximumSize={10}
+                                    isForm={true}
+                                    accept={[
+                                        { mime: "application/pdf", extensions: [".pdf"] },
+                                        { mime: "image/jpeg", extensions: [".jpg", ".jpeg"] },
+                                        { mime: "image/png", extensions: [".png"] },
+                                    ]}
+                                />
+                            )
+                        }
 
                         <div className="space-y-4">
                             <RadioGroup

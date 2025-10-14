@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { getMyCollectionRequests } from "../store/thunks/collectionRequest";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { MdSensors } from "react-icons/md";
+import { collectionRequestOriginTypes } from "../constants/commonConstants";
 
 const MyOrders = () => {
     const [sensors, setSensors] = useState([]);
@@ -122,12 +123,15 @@ const MyOrders = () => {
     const ProductCard = ({ title, price, image, imageAlt, _id, purchseSensor, data }) => {
         return (
             <div className="relative flex flex-col sm:flex-row bg-card rounded-lg shadow-md border-[1px] overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="flex w-full sm:w-[30%]">
-                    <img
-                        src={data?.attachment}
-                        className="object-cover"
-                    />
-                </div>
+                {
+                    data?.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL &&
+                    <div className="flex w-full sm:w-[30%]">
+                        <img
+                            src={data?.attachment}
+                            className="object-cover"
+                        />
+                    </div>
+                }
                 <div className="flex flex-col w-full sm:w-[70%] p-6 flex-grow h-[100%]">
                     <div className="relative flex flex-row w-full justify-between mb-1">
                         <h3 className="leading-[18px] max-w-[80%] text-[1.4rem] font-semibold text-gray-700 text-start">
@@ -140,6 +144,11 @@ const MyOrders = () => {
                     <div className="flex flex-row w-full justify-start">
                         <p className="flex flex-row font-bold text-center mb-2 text-gray-500">
                             {data?.type} - <span className="flex items-center lowercase text-[14px] text-primary ml-1">{data?.priority}</span>
+                        </p>
+                    </div>
+                    <div className="flex flex-row w-full justify-start">
+                        <p className="flex flex-row font-bold text-center mb-2 text-gray-500 text-[13px]">
+                            {data?.collectionRequestOriginType}
                         </p>
                     </div>
                     <div className="flex flex-row w-full justify-start items-center">

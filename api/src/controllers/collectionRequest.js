@@ -136,6 +136,7 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
     scheduledDate,
     scheduledTimeSlot,
     specialInstructions,
+    collectionRequestOriginType,
     attachment,
   } = req.body;
 
@@ -179,8 +180,11 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
       estimatedVolume: wasteDetails?.estimatedVolume,
       specialInstructions: specialInstructions,
     },
-    attachment
+    attachment,
+    collectionRequestOriginType
   };
+
+
 
   if (bin) {
     requestData.bin = bin;
@@ -214,6 +218,7 @@ exports.createCollectionRequest = catchAsync(async (req, res, next) => {
   const populatedRequest = await CollectionRequest.findById(request._id)
     .populate("requester", "firstName lastName email phoneNumber")
     .populate("bin", "binNumber category location");
+
 
   return handleResponse(res, 201, "Collection request created successfully", populatedRequest);
 });

@@ -18,7 +18,10 @@ export const customBreakpoints = {
   "1536px": 1536,
 };
 
-
+export const collectionRequestOriginTypes = {
+  NORMAL: "NORMAL",
+  SPECIAL: "SPECIAL",
+};
 
 export const paymentStatus = {
   PENDING: "PENDING",
