@@ -128,6 +128,8 @@ exports.signin = catchAsync(async (req, res, next) => {
     email: user?.email,
     profilePicture: user?.profilePicture,
     wishList: user?.wishList || [],
+    filteredAddresses: user?.filteredAddresses,
+    scope: user?.scope
   };
   return handleResponse(res, 200, "Signed-in Successfully", {
     token: accessToken,
