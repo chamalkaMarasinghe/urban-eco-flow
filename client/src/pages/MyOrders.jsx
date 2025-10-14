@@ -124,7 +124,7 @@ const MyOrders = () => {
         return (
             <div className="relative flex flex-col sm:flex-row bg-card rounded-lg shadow-md border-[1px] overflow-hidden hover:shadow-xl transition-shadow">
                 {
-                    data?.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL &&
+                    data?.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL && data?.attachment &&
                     <div className="flex w-full sm:w-[30%]">
                         <img
                             src={data?.attachment}

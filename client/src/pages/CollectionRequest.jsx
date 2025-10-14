@@ -19,9 +19,13 @@ import { useThunk } from "../hooks/useThunk";
 import { createCollectionRequest } from "../store/thunks/collectionRequest";
 import { getAllCreatedBins } from "../store/thunks/sensor";
 import { collectionRequestOriginTypes } from "../constants/commonConstants";
+import { useSelector } from "react-redux";
 
 // Main Request Collection Page
 const RequestCollection = () => {
+
+    const { isAuthenticated, user, role, availableRoles } = useSelector((state) => state.auth);
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         collectionRequestOriginType: collectionRequestOriginTypes.NORMAL,
@@ -31,12 +35,24 @@ const RequestCollection = () => {
         location: "",
         serviceType: "regular",
         attachments: null,
+        // schedule fields (new)
+        scheduleStartDate: "",        // format: YYYY-MM-DD
+        scheduleDays: "",             // e.g. ["MONDAY","WEDNESDAY"]
     });
     const [bins, setBins] = useState([]);
 
     const [doUploadFilesToFirebase, isUploadingFiles, uploadFilesError] = useFirebaseFileUpload();
     const [doCollectionRequest, isCollectionRequest, collectionRequestError] = useThunk(createCollectionRequest);
     const [doGetAllCreatedBins, isGetAllCreatedBins, errorGetAllCreatedBins] = useThunk(getAllCreatedBins);
+
+    useEffect(() => {
+        if(formData.collectionType === "hazardous"){
+            setFormData({
+                ...formData,
+                collectionRequestOriginType: collectionRequestOriginTypes.SPECIAL
+            })
+        }
+    }, [formData.collectionType])
 
     useEffect(() => {
         getAllBinsMethod();
@@ -51,13 +67,50 @@ const RequestCollection = () => {
         }
     }
 
+    const WEEK_DAYS = [
+      { key: "MONDAY", label: "Monday" },
+      { key: "TUESDAY", label: "Tuesday" },
+      { key: "WEDNESDAY", label: "Wednesday" },
+      { key: "THURSDAY", label: "Thursday" },
+      { key: "FRIDAY", label: "Friday" },
+      { key: "SATURDAY", label: "Saturday" },
+      { key: "SUNDAY", label: "Sunday" },
+    ];
+
+    // const toggleScheduleDay = (dayKey) => {
+    //   setFormData(prev => {
+    //     const days = Array.isArray(prev.scheduleDays) ? [...prev.scheduleDays] : [];
+    //     const found = days.indexOf(dayKey);
+    //     if (found === -1) days.push(dayKey);
+    //     else days.splice(found, 1);
+    //     return { ...prev, scheduleDays: days };
+    //   });
+    // };
+
+    // const getScheduleValueForSelect = () => {
+    //   const days = formData.scheduleDays || [];
+    //   if (!days.length) return null;
+    //   // show human readable labels joined by comma
+    //   const labels = WEEK_DAYS.filter(w => days.includes(w.key)).map(w => w.label);
+    //   return labels.join(", ");
+    // };
+
     const handleSubmit = async() => {
 
         if(!formData.bin || formData?.bin?.length < 1){
             showToast("error", "Please select a bin");
             return;
         }
-        
+
+        // // If user requested scheduling (you can change condition as needed)
+        // if (formData.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL) {
+        //   // If they enabled schedule we validate schedule fields
+        //   if (formData.scheduleDays?.length > 0 && !formData.scheduleStartDate) {
+        //     showToast("error", "Please select a start date for the schedule");
+        //     return;
+        //   }
+        // }
+
         let attachment = [];
 
         // NOTE: Upload attachments if they exist and are File objects
@@ -101,6 +154,11 @@ const RequestCollection = () => {
 
             type: formData?.collectionType?.toUpperCase(),
             priority: formData?.serviceType?.toUpperCase(),
+            // include schedule in payload
+            schedule: {
+                startDate: formData?.scheduleStartDate || null,
+                days: formData?.scheduleDays || []
+            }
         };
 
         if(attachment?.length > 0){
@@ -117,13 +175,15 @@ const RequestCollection = () => {
                 location: "",
                 serviceType: "regular",
                 attachments: null,
+                scheduleStartDate: "",
+                scheduleDays: []
             })
         }else{
             showToast("error", result?.error?.message || "Error occrred during placing the collection request")
         }
         showToast("success", "Collection request was placed successfully");
         
-        console.log("Form submitted:", formData);        
+        console.log("Form submitted:", tempFormData);        
         // Handle form submission
     };
 
@@ -135,6 +195,8 @@ const RequestCollection = () => {
             location: "",
             serviceType: "regular",
             attachments: null,
+            scheduleStartDate: "",
+            scheduleDays: []
         })
         navigate("/");
     };
@@ -176,9 +238,6 @@ const RequestCollection = () => {
                                         >
                                             {collectionRequestOriginTypes.NORMAL}
                                         </Label>
-                                        {/* <p className="text-sm text-muted-foreground">
-                                            {collectionRequestOriginTypes.NORMAL}
-                                        </p> */}
                                     </div>
                                 </div>
 
@@ -309,7 +368,7 @@ const RequestCollection = () => {
                             </div>
                         </div>
 
-                        {/* <FileUpload /> */}
+                        {/* Conditional: file upload OR scheduler for SPECIAL origin */}
                         {
                             formData.collectionRequestOriginType === collectionRequestOriginTypes.SPECIAL && (
                                 <ImageUpload
@@ -329,6 +388,81 @@ const RequestCollection = () => {
                                         { mime: "image/png", extensions: [".png"] },
                                     ]}
                                 />
+                            )
+                        }
+
+                        {
+                            user?.scope === "BUSINESS" && (
+                                <>
+                                    {/* --- New schedule UI --- */}
+                                    <div className="mt-4 p-4 border rounded">
+                                    <h3 className="font-semibold mb-2">Plan a schedule</h3>
+
+                                    {/* Start date */}
+                                    <div className="mb-3">
+                                        <Label htmlFor="scheduleStartDate">Start Date</Label>
+                                        <input
+                                        id="scheduleStartDate"
+                                        type="date"
+                                        value={formData.scheduleStartDate}
+                                        onChange={(e) => setFormData({...formData, scheduleStartDate: e.target.value})}
+                                        className="w-full border rounded px-3 py-2"
+                                        />
+                                    </div>
+
+                                    {/* Weekday selector using your Select component as a toggle multi-select */}
+                                    <div>
+                                        <Label htmlFor="scheduleDays">Repeat on</Label>
+                                        <Select
+                                        value={formData.scheduleDays}
+                                        //   onValueChange={(value) => {
+                                        //     // value is the label or null; we'll not use it directly
+                                        //     // The SelectItem click handler below toggles days.
+                                        //   }}
+                                            onValueChange={(value) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    scheduleDays: value,
+                                                })
+                                            }
+                                        >
+                                        <SelectTrigger id="scheduleDays">
+                                            <SelectValue placeholder="Select days (Mon - Fri)" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {WEEK_DAYS.map((d) => (
+                                            <SelectItem
+                                                key={d.key}
+                                                value={d.key}
+                                                // onClick={(e) => {
+                                                //   // Prevent the select from closing (if your Select closes on select)
+                                                //   e.stopPropagation && e.stopPropagation();
+                                                //   toggleScheduleDay(d.key);
+                                                // }}
+                                            >
+                                                {/* <div className="flex justify-between items-center w-full">
+                                                <span>{d.label}</span>
+                                                {formData.scheduleDays?.includes(d.key) && (
+                                                    <span className="text-sm text-green-600">Selected</span>
+                                                )}
+                                                </div> */}
+                                                {d.key}
+                                            </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                        </Select>
+
+                                        {/* Summary of selected days */}
+                                        <div className="mt-2 text-sm text-muted-foreground">
+                                        {formData.scheduleDays?.length > 0 ? (
+                                            <span>Every: { (WEEK_DAYS.filter(w => formData.scheduleDays.includes(w.key)).map(w => w.label)).join(", ") }</span>
+                                        ) : (
+                                            <span className="text-gray-400">No days selected</span>
+                                        )}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </>
                             )
                         }
 
