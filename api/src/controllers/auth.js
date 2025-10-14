@@ -36,7 +36,7 @@ const SIGNIN_OTP_VERIFICATION = currentEnvironment.SIGNIN_OTP_VERIFICATION;
 
 // NOTE: user
 exports.signupAsUser = catchAsync(async (req, res, next) => {
-  const { firstName, lastName, email, phoneNumber, password } = req.body;
+  const { firstName, lastName, email, phoneNumber, password, serviceType, filteredAddresses } = req.body;
 
   const userRoles = [`${roles.USER}`];
 
@@ -64,6 +64,8 @@ exports.signupAsUser = catchAsync(async (req, res, next) => {
     roles: userRoles,
     email: email?.toString()?.toLowerCase(),
     password,
+    scope: serviceType?.toUpperCase(),
+    filteredAddresses
   });
 
   const newUser = await user.save();

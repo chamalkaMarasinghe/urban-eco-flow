@@ -16,7 +16,7 @@ export const AuthModelBaseComp = ({
 
   // Define different heights for different form variants
   const modalHeightMap = {
-    [AUTH_POPUP_VARIANTS.REGISTER]: "min-h-[401px]", // Taller for registration form
+    [AUTH_POPUP_VARIANTS.REGISTER]: "min-h-[401px] max-h-[90vh] overflow-y-auto overflow-x-hidden", // Taller for registration form
     [AUTH_POPUP_VARIANTS.SIGNIN]: "min-h-[400px]", // Medium height for sign in
     [AUTH_POPUP_VARIANTS.FORGOT_PASSWORD]: "min-h-[311px]", // Shorter for forgot password
     [AUTH_POPUP_VARIANTS.RESET_PASSWORD]: "min-h-[400px]", // Medium height for reset password
@@ -33,7 +33,7 @@ export const AuthModelBaseComp = ({
 
   return (
     <div className="fixed inset-0 z-[99] flex items-center justify-center bg-black bg-opacity-50">
-      <div className={`bg-white relative shadow-lg rounded-2xl w-[88%] md:max-w-[638px] lg:max-w-[638px] flex justify-center items-center ${modalHeight}`}>
+      <div className={`bg-white relative shadow-lg rounded-2xl w-[88%] md:max-w-[638px] lg:max-w-[638px] flex justify-center items-start ${modalHeight}`}>
         <div className="h-full w-full md:w-[638px] px-6 py-8 md:p-12 flex flex-col md:flex-row gap-5 ">
           <button
             onClick={handleClose}

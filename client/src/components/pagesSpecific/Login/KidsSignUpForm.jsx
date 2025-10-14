@@ -23,6 +23,8 @@ import { AUTH_POPUP_VARIANTS } from "../../../constants/commonConstants";
 import { useDispatch, useSelector } from "react-redux";
 import {validateField} from "../../../utils/validationUtils";
 import { useLanguage } from "../../../context/language/language";
+import { RadioGroup, RadioGroupItem } from "../../Reusable/RadioGroup";
+import Label from "../../Reusable/label";
 
 const KidsSignUpForm = ({ handlers, variant }) => {
   // const {language} = useLanguage();
@@ -103,6 +105,8 @@ const KidsSignUpForm = ({ handlers, variant }) => {
   const dynamicRequiredFields = {
     firstName: !!content.formConfig.showFirstName,
     lastName: !!content.formConfig.showLastName,
+    serviceType: !!content.formConfig.showLastName,
+    address: !!content.formConfig.showLastName,
     email: !!content.formConfig.showEmail,
     phoneNumber: !!content.formConfig.showPhone,
     password: !!content.formConfig.showPassword,
@@ -144,6 +148,9 @@ const KidsSignUpForm = ({ handlers, variant }) => {
     {
       firstName: "",
       lastName: "",
+      serviceType: "Resident",
+      address: "",
+      addressMulti: [],
       email: "",
       phoneNumber: "",
       password: "",
@@ -155,6 +162,9 @@ const KidsSignUpForm = ({ handlers, variant }) => {
     {
       firstName: COMMON_FIELD_TYPES.REQUIRED_FIELD,
       lastName: COMMON_FIELD_TYPES.REQUIRED_FIELD,
+      serviceType: COMMON_FIELD_TYPES.REQUIRED_FIELD,
+      address: COMMON_FIELD_TYPES.REQUIRED_FIELD,
+      addressMulti: COMMON_FIELD_TYPES.TEXT_FIELD,
       email: COMMON_FIELD_TYPES.EMAIL_FIELD,
       phoneNumber: COMMON_FIELD_TYPES.PHONE,
       password: COMMON_FIELD_TYPES.PASSWORD_FIELD,
@@ -185,7 +195,12 @@ const KidsSignUpForm = ({ handlers, variant }) => {
             break;
 
           case AUTH_POPUP_VARIANTS.REGISTER:
-            result = await doSignUp(formData);
+            let filteredAddresses = [formData?.address, ...formData?.addressMulti];
+            filteredAddresses = filteredAddresses?.filter?.((it, index) => {
+              return it?.length > 0;
+            })
+            const temp = {...formData, filteredAddresses};
+            result = await doSignUp(temp);
             if (result?.success) {
               localStorage.setItem("token", result?.response?.data?.token);
               showToast("success", "Sign in Successful");
@@ -258,6 +273,7 @@ const KidsSignUpForm = ({ handlers, variant }) => {
       }
     }
   };
+console.log(formData);
 
   return (
     <div
@@ -286,6 +302,58 @@ const KidsSignUpForm = ({ handlers, variant }) => {
 
       {/* Form Container with flex-1 to take remaining space */}
       <form className="flex flex-col justify-between flex-1 pt-2 sm:pt-0">
+
+                    {variant === AUTH_POPUP_VARIANTS.REGISTER && (
+                  <RadioGroup
+                      value={formData.serviceType}
+                      onValueChange={(value) =>
+                          setFormData({
+                              ...formData,
+                              serviceType: value,
+                          })
+                      }
+                      className="flex flex-row justify-center my-5 mb-10"
+                  >
+                      <div className="flex items-start space-x-3">
+                          <RadioGroupItem
+                              value="Resident"
+                              id="Resident"
+                              className="mt-1"
+                          />
+                          <div>
+                              <Label
+                                  htmlFor="Resident"
+                                  className="font-semibold cursor-pointer text-gray-700"
+                              >
+                                  Resident
+                              </Label>
+                              <p className="text-sm text-gray-500">
+                                  Resident User
+                              </p>
+                          </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                          <RadioGroupItem
+                              value="Business"
+                              id="Business"
+                              className="mt-1"
+                          />
+                          <div>
+                              <Label
+                                  htmlFor="Business"
+                                  className="font-semibold cursor-pointer text-gray-700"
+                              >
+                                  Business 
+                              </Label>
+                              <p className="text-sm text-muted-foreground text-gray-500">
+                                  Business User
+                              </p>
+                          </div>
+                      </div>
+                  </RadioGroup>
+            )}
+
         {/* Form Fields Section */}
         <div className="flex flex-col justify-start flex-1">
           <div
@@ -359,7 +427,7 @@ const KidsSignUpForm = ({ handlers, variant }) => {
 
             {content.formConfig.showPassword && (
               <CustomInput
-                placeholder="Enter your Email" // Note: This should likely be "Enter your password"
+                placeholder="Enter your password" // Note: This should likely be "Enter your password"
                 type={showPassword ? "text" : "password"}
                 name="password"
                 value={formData.password}
@@ -469,6 +537,100 @@ const KidsSignUpForm = ({ handlers, variant }) => {
               </div>
             </div>
           )}
+
+          {variant === AUTH_POPUP_VARIANTS.REGISTER && (
+              formData.serviceType === "Resident" && (
+                <CustomInput
+                  placeholder="Enter your address/location"
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  error={touched.address && errors.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  onBlur={() => handleBlur("address", formData.address)}
+                  onFocus={() => clearError("address")}
+                  className="mt-6 font-roboto h-[32px] sm:h-[40px] px-3 py-[6px] rounded-[4px] bg-primary-light/30 text-[#5C5F6A] placeholder:font-roboto placeholder:font-normal sm:placeholder:text-base placeholder:text-[15px] placeholder:text-[#33415580]"
+                  labelStyle="font-inter font-medium sm:text-[16px] text-dark"
+                  isRequired={true}
+                />
+              )
+          )}
+          {variant === AUTH_POPUP_VARIANTS.REGISTER && (
+              formData.serviceType === "Business" && (
+                <CustomInput
+                  placeholder="Enter your address/location"
+                  type="text"
+                  name="address"
+                  value={formData.address}
+                  error={touched.address && errors.address}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  onBlur={() => handleBlur("address", formData.address)}
+                  onFocus={() => clearError("address")}
+                  className="mt-6 font-roboto h-[32px] sm:h-[40px] px-3 py-[6px] rounded-[4px] bg-primary-light/30 text-[#5C5F6A] placeholder:font-roboto placeholder:font-normal sm:placeholder:text-base placeholder:text-[15px] placeholder:text-[#33415580]"
+                  labelStyle="font-inter font-medium sm:text-[16px] text-dark"
+                  isRequired={true}
+                />
+              )
+          )}
+          {variant === AUTH_POPUP_VARIANTS.REGISTER && (
+              formData.serviceType === "Business" && (
+                formData?.addressMulti?.map((it, index) => {
+                  return(
+                    <CustomInput
+                      placeholder="Enter your address/location"
+                      type="text"
+                      name="address"
+                      value={formData?.addressMulti[index]}
+                      // error={touched.address && errors.address}
+                      // onChange={(e) => handleInputChange("address", e.target.value)}
+                      onChange={(e) => {
+                        const x = [...formData?.addressMulti];
+                        x[index] = e.target.value;
+                        setFormData({
+                          ...formData,
+                          addressMulti: x
+                        })
+                      }}
+                      // onBlur={() => handleBlur("address", formData.address)}
+                      // onFocus={() => clearError("address")}
+                      className="mt-6 font-roboto h-[32px] sm:h-[40px] px-3 py-[6px] rounded-[4px] bg-primary-light/30 text-[#5C5F6A] placeholder:font-roboto placeholder:font-normal sm:placeholder:text-base placeholder:text-[15px] placeholder:text-[#33415580]"
+                      labelStyle="font-inter font-medium sm:text-[16px] text-dark"
+                      isRequired={true}
+                    />
+                  )
+                })
+              )
+          )}
+          <div className="flex flex-row -mt-3">
+            {variant === AUTH_POPUP_VARIANTS.REGISTER && (
+                formData.serviceType === "Business" && (
+                  <div className="">
+                    <span 
+                      className="text-gray-500 cursor-pointer text-primary -mt-2 mr-2"
+                      onClick={() => {
+                        setFormData({...formData, addressMulti: [...formData?.addressMulti, ""]})
+                      }}
+                    >
+                        add
+                    </span>
+                  </div>
+                )
+            )}
+            {variant === AUTH_POPUP_VARIANTS.REGISTER && formData?.addressMulti?.length > 0 && (
+                formData.serviceType === "Business" && (
+                  <div className="">
+                    <span 
+                      className="cursor-pointer text-red-400 -mt-2"
+                      onClick={() => {
+                        setFormData({...formData, addressMulti: formData?.addressMulti?.slice(0, formData?.addressMulti?.length - 1)})
+                      }}
+                    >
+                        remove
+                    </span>
+                  </div>
+                )
+            )}
+          </div>
 
           {/* Terms and Conditions for Register */}
           {variant === AUTH_POPUP_VARIANTS.REGISTER && (

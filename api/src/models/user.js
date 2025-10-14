@@ -385,6 +385,14 @@ const userSchema = new mongoose.Schema(
                 required: false,
             }
         ],
+        scope: {
+            type: String,
+            enum: Object.values(roles),
+            default: roles.RESIDENT
+        },
+        filteredAddresses: {
+            type: [String]
+        }
     },
     { timestamps: true }
 );
