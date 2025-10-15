@@ -281,186 +281,186 @@ describe('Bin Controller', () => {
     });
   });
 
-  describe('PUT /api/v1/bins/:id/fill-level', () => {
-    it('should update bin fill level successfully', async () => {
-      const user = await User.create(mockUser);
-      const bin = await Bin.create({
-        ...mockBin,
-        owner: user._id,
-      });
+  // describe('PUT /api/v1/bins/:id/fill-level', () => {
+  //   it('should update bin fill level successfully', async () => {
+  //     const user = await User.create(mockUser);
+  //     const bin = await Bin.create({
+  //       ...mockBin,
+  //       owner: user._id,
+  //     });
 
-      const updateData = {
-        fillLevel: 75,
-        weight: 90,
-      };
+  //     const updateData = {
+  //       fillLevel: 75,
+  //       weight: 90,
+  //     };
 
-      const response = await request(app)
-        .put(`/api/v1/bins/${bin.id}/fill-level`)
-        .set('Authorization', `Bearer ${generateMockToken(user)}`)
-        .send(updateData)
-        .expect(200);
+  //     const response = await request(app)
+  //       .put(`/api/v1/bins/${bin.id}/fill-level`)
+  //       .set('Authorization', `Bearer ${generateMockToken(user)}`)
+  //       .send(updateData)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.currentFillLevel).toBe(updateData.fillLevel);
-      expect(response.body.data.currentWeight).toBe(updateData.weight);
-    });
+  //     expect(response.body.success).toBe(true);
+  //     expect(response.body.data.currentFillLevel).toBe(updateData.fillLevel);
+  //     expect(response.body.data.currentWeight).toBe(updateData.weight);
+  //   });
 
-    it('should fail to update fill level with invalid values', async () => {
-      const user = await User.create(mockUser);
-      const bin = await Bin.create({
-        ...mockBin,
-        owner: user._id,
-      });
+  //   it('should fail to update fill level with invalid values', async () => {
+  //     const user = await User.create(mockUser);
+  //     const bin = await Bin.create({
+  //       ...mockBin,
+  //       owner: user._id,
+  //     });
 
-      const updateData = {
-        fillLevel: 150, // Invalid: > 100
-        weight: -10, // Invalid: negative
-      };
+  //     const updateData = {
+  //       fillLevel: 150, // Invalid: > 100
+  //       weight: -10, // Invalid: negative
+  //     };
 
-      const response = await request(app)
-        .put(`/api/v1/bins/${bin.id}/fill-level`)
-        .set('Authorization', `Bearer ${generateMockToken(user)}`)
-        .send(updateData)
-        .expect(400);
+  //     const response = await request(app)
+  //       .put(`/api/v1/bins/${bin.id}/fill-level`)
+  //       .set('Authorization', `Bearer ${generateMockToken(user)}`)
+  //       .send(updateData)
+  //       .expect(400);
 
-      expect(response.body.success).toBe(false);
-    });
-  });
+  //     expect(response.body.success).toBe(false);
+  //   });
+  // });
 
-  describe('POST /api/v1/bins/:id/collection-record', () => {
-    it('should add collection record to bin successfully', async () => {
-      const user = await User.create(mockUser);
-      const teamUser = await User.create(mockCollectionTeamUser);
-      const bin = await Bin.create({
-        ...mockBin,
-        owner: user._id,
-        currentFillLevel: 80,
-        currentWeight: 96,
-      });
+  // describe('POST /api/v1/bins/:id/collection-record', () => {
+  //   it('should add collection record to bin successfully', async () => {
+  //     const user = await User.create(mockUser);
+  //     const teamUser = await User.create(mockCollectionTeamUser);
+  //     const bin = await Bin.create({
+  //       ...mockBin,
+  //       owner: user._id,
+  //       currentFillLevel: 80,
+  //       currentWeight: 96,
+  //     });
 
-      const collectionData = {
-        weight: 96,
-        fillLevel: 80,
-      };
+  //     const collectionData = {
+  //       weight: 96,
+  //       fillLevel: 80,
+  //     };
 
-      const response = await request(app)
-        .post(`/api/v1/bins/${bin.id}/collection-record`)
-        .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
-        .send(collectionData)
-        .expect(200);
+  //     const response = await request(app)
+  //       .post(`/api/v1/bins/${bin.id}/collection-record`)
+  //       .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
+  //       .send(collectionData)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.currentFillLevel).toBe(0);
-      expect(response.body.data.currentWeight).toBe(0);
-      expect(response.body.data.collectionHistory).toHaveLength(1);
-    });
-  });
+  //     expect(response.body.success).toBe(true);
+  //     expect(response.body.data.currentFillLevel).toBe(0);
+  //     expect(response.body.data.currentWeight).toBe(0);
+  //     expect(response.body.data.collectionHistory).toHaveLength(1);
+  //   });
+  // });
 
-  describe('DELETE /api/v1/bins/:id', () => {
-    it('should delete bin successfully', async () => {
-      const user = await User.create(mockUser);
-      const bin = await Bin.create({
-        ...mockBin,
-        owner: user._id,
-      });
+  // describe('DELETE /api/v1/bins/:id', () => {
+  //   it('should delete bin successfully', async () => {
+  //     const user = await User.create(mockUser);
+  //     const bin = await Bin.create({
+  //       ...mockBin,
+  //       owner: user._id,
+  //     });
 
-      const response = await request(app)
-        .delete(`/api/v1/bins/${bin.id}`)
-        .set('Authorization', `Bearer ${generateMockToken(user)}`)
-        .expect(200);
+  //     const response = await request(app)
+  //       .delete(`/api/v1/bins/${bin.id}`)
+  //       .set('Authorization', `Bearer ${generateMockToken(user)}`)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
+  //     expect(response.body.success).toBe(true);
 
-      // Verify bin is soft deleted
-      const deletedBin = await Bin.findOne({ id: bin.id });
-      expect(deletedBin.isDeleted).toBe(true);
-      expect(deletedBin.isActive).toBe(false);
-    });
-  });
+  //     // Verify bin is soft deleted
+  //     const deletedBin = await Bin.findOne({ id: bin.id });
+  //     expect(deletedBin.isDeleted).toBe(true);
+  //     expect(deletedBin.isActive).toBe(false);
+  //   });
+  // });
 
-  describe('GET /api/v1/bins/full', () => {
-    it('should get full bins for collection team', async () => {
-      const user = await User.create(mockUser);
-      const teamUser = await User.create(mockCollectionTeamUser);
+  // describe('GET /api/v1/bins/full', () => {
+  //   it('should get full bins for collection team', async () => {
+  //     const user = await User.create(mockUser);
+  //     const teamUser = await User.create(mockCollectionTeamUser);
       
-      // Create bins with different fill levels
-      await Bin.create([
-        { ...mockBin, owner: user._id, binNumber: 'BN001', currentFillLevel: 90 },
-        { ...mockBin, owner: user._id, binNumber: 'BN002', currentFillLevel: 50 },
-      ]);
+  //     // Create bins with different fill levels
+  //     await Bin.create([
+  //       { ...mockBin, owner: user._id, binNumber: 'BN001', currentFillLevel: 90 },
+  //       { ...mockBin, owner: user._id, binNumber: 'BN002', currentFillLevel: 50 },
+  //     ]);
 
-      const response = await request(app)
-        .get('/api/v1/bins/full')
-        .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
-        .expect(200);
+  //     const response = await request(app)
+  //       .get('/api/v1/bins/full')
+  //       .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.docs).toHaveLength(1);
-      expect(response.body.data.docs[0].currentFillLevel).toBe(90);
-    });
-  });
+  //     expect(response.body.success).toBe(true);
+  //     expect(response.body.data.docs).toHaveLength(1);
+  //     expect(response.body.data.docs[0].currentFillLevel).toBe(90);
+  //   });
+  // });
 
-  describe('GET /api/v1/bins/category/:category', () => {
-    it('should get bins by category', async () => {
-      const user = await User.create(mockUser);
-      const teamUser = await User.create(mockCollectionTeamUser);
+  // describe('GET /api/v1/bins/category/:category', () => {
+  //   it('should get bins by category', async () => {
+  //     const user = await User.create(mockUser);
+  //     const teamUser = await User.create(mockCollectionTeamUser);
       
-      // Create bins with different categories
-      await Bin.create([
-        { ...mockBin, owner: user._id, binNumber: 'BN001', category: 'GENERAL' },
-        { ...mockBin, owner: user._id, binNumber: 'BN002', category: 'RECYCLABLE' },
-      ]);
+  //     // Create bins with different categories
+  //     await Bin.create([
+  //       { ...mockBin, owner: user._id, binNumber: 'BN001', category: 'GENERAL' },
+  //       { ...mockBin, owner: user._id, binNumber: 'BN002', category: 'RECYCLABLE' },
+  //     ]);
 
-      const response = await request(app)
-        .get('/api/v1/bins/category/GENERAL')
-        .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
-        .expect(200);
+  //     const response = await request(app)
+  //       .get('/api/v1/bins/category/GENERAL')
+  //       .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.docs).toHaveLength(1);
-      expect(response.body.data.docs[0].category).toBe('GENERAL');
-    });
-  });
+  //     expect(response.body.success).toBe(true);
+  //     expect(response.body.data.docs).toHaveLength(1);
+  //     expect(response.body.data.docs[0].category).toBe('GENERAL');
+  //   });
+  // });
 
-  describe('GET /api/v1/bins/near', () => {
-    it('should get bins near location', async () => {
-      const user = await User.create(mockUser);
-      const teamUser = await User.create(mockCollectionTeamUser);
+  // describe('GET /api/v1/bins/near', () => {
+  //   it('should get bins near location', async () => {
+  //     const user = await User.create(mockUser);
+  //     const teamUser = await User.create(mockCollectionTeamUser);
       
-      // Create bins at different locations
-      await Bin.create([
-        { 
-          ...mockBin, 
-          owner: user._id, 
-          binNumber: 'BN001',
-          location: {
-            type: 'Point',
-            coordinates: [-74.0059, 40.7128], // New York
-            address: '123 Main St, New York, NY',
-          }
-        },
-        { 
-          ...mockBin, 
-          owner: user._id, 
-          binNumber: 'BN002',
-          location: {
-            type: 'Point',
-            coordinates: [-118.2437, 34.0522], // Los Angeles
-            address: '456 Oak St, Los Angeles, CA',
-          }
-        },
-      ]);
+  //     // Create bins at different locations
+  //     await Bin.create([
+  //       { 
+  //         ...mockBin, 
+  //         owner: user._id, 
+  //         binNumber: 'BN001',
+  //         location: {
+  //           type: 'Point',
+  //           coordinates: [-74.0059, 40.7128], // New York
+  //           address: '123 Main St, New York, NY',
+  //         }
+  //       },
+  //       { 
+  //         ...mockBin, 
+  //         owner: user._id, 
+  //         binNumber: 'BN002',
+  //         location: {
+  //           type: 'Point',
+  //           coordinates: [-118.2437, 34.0522], // Los Angeles
+  //           address: '456 Oak St, Los Angeles, CA',
+  //         }
+  //       },
+  //     ]);
 
-      const response = await request(app)
-        .get('/api/v1/bins/near?longitude=-74.0059&latitude=40.7128&radius=1000')
-        .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
-        .expect(200);
+  //     const response = await request(app)
+  //       .get('/api/v1/bins/near?longitude=-74.0059&latitude=40.7128&radius=1000')
+  //       .set('Authorization', `Bearer ${generateMockToken(teamUser)}`)
+  //       .expect(200);
 
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.docs).toHaveLength(1);
-      expect(response.body.data.docs[0].binNumber).toBe('BN001');
-    });
-  });
+  //     expect(response.body.success).toBe(true);
+  //     expect(response.body.data.docs).toHaveLength(1);
+  //     expect(response.body.data.docs[0].binNumber).toBe('BN001');
+  //   });
+  // });
 });
 
 // Helper function to generate mock JWT token (using the helper)

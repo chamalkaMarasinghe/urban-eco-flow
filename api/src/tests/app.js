@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 // API routes
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/sensors', SensorRoutes);
-app.use('/api/v1/sensors', SensorPurchaseRoutes);
+// app.use('/api/v1/sensors', SensorPurchaseRoutes);
 app.use('/api/v1/collection-requests', CollectionRequestRoutes);
 app.use('/api/v1/bins', BinRoutes);
 
