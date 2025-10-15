@@ -66,9 +66,11 @@ class SensorService {
 
       console.log(newSensorData);
       
-
+      console.log('new sensor datra |||||||||||||||||||||||||||||||||||||||||', newSensorData);
+      
       // Create sensor
       const sensor = await Sensor.create(newSensorData);
+          console.log('sensor |||||||||||||||||||||||||||||||||||||||||', sensor);
 
       // Attach sensor to bin if specified
       if (sensorData.binId) {
@@ -86,7 +88,7 @@ class SensorService {
         duration: `${duration}ms`,
       });
 
-      return await this.getSensorById(sensor.id);
+      return await this.getSensorById(sensor._id);
     } catch (error) {
       logError(error, { operation: 'createSensor', userId, sensorData });
       throw error;
@@ -100,6 +102,8 @@ class SensorService {
    */
   async getSensorById(sensorId) {
     try {
+      console.log('sensor idddddddddddddddddddd ||||||||||||||||||||||||||||| ', sensorId);
+      
       const sensor = await Sensor.findOne({ _id: sensorId, isDeleted: { $ne: true } })
         .populate('owner', 'firstName lastName email phoneNumber')
         .populate('bin', 'binNumber category location');
