@@ -284,7 +284,7 @@ PASS src/tests/collectionRequest.test.js
 PASS src/tests/bin.test.js
 
 Test Suites: 4 passed, 4 total
-Tests:       45 passed, 45 total
+Tests:       5 passed, 5 total
 Snapshots:   0 total
 Time:        12.345 s
 Ran all test suites.
